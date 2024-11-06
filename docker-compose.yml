@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: testov
+      POSTGRES_PASSWORD: Euro123456
+      POSTGRES_DB: lingua_tutor
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
