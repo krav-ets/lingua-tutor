@@ -1,34 +1,34 @@
-import type { Context } from '#root/bot/context.js'
-import type { Conversation } from '@grammyjs/conversations'
-import { i18n } from '#root/bot/i18n.js'
-import { createConversation } from '@grammyjs/conversations'
+import type { Context } from '#root/bot/context.js';
+import type { Conversation } from '@grammyjs/conversations';
+import { i18n } from '#root/bot/i18n.js';
+import { createConversation } from '@grammyjs/conversations';
 
-export const GREETING_CONVERSATION = 'greeting'
+export const GREETING_CONVERSATION = 'greeting';
 
 export function greetingConversation() {
   return createConversation(
     async (conversation: Conversation<Context>, ctx: Context) => {
-      await conversation.run(i18n)
+      await conversation.run(i18n);
 
-      await ctx.reply('Please send me your name')
+      await ctx.reply('Please send me your name');
 
       while (true) {
-        ctx = await conversation.wait()
+        ctx = await conversation.wait();
 
         if (ctx.hasCommand('cancel')) {
-          return ctx.reply('Cancelled')
+          return ctx.reply('Cancelled');
         }
         else if (ctx.has('message:text')) {
-          ctx.chatAction = 'typing'
-          await conversation.sleep(1000)
+          ctx.chatAction = 'typing';
+          await conversation.sleep(1000);
 
-          await ctx.reply(`Hello, ${ctx.message.text}!`)
+          await ctx.reply(`Hello, ${ctx.message.text}!`);
         }
         else {
-          await ctx.reply('Please send me your name')
+          await ctx.reply('Please send me your name');
         }
       }
     },
     GREETING_CONVERSATION,
-  )
+  );
 }

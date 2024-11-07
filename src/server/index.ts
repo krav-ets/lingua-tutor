@@ -1,8 +1,8 @@
+import type { Bot } from '#root/bot/index.js';
+import type { Config } from '#root/config.js';
+import type { Logger } from '#root/logger.js';
 import Fastify from 'fastify';
 import { webhookCallback } from 'grammy';
-import type { Bot } from '#root/bot/index.js';
-import type { Logger } from '#root/logger.js';
-import type { Config } from '#root/config.js';
 
 interface Dependencies {
   bot: Bot;
@@ -20,13 +20,13 @@ export function createServer(dependencies: Dependencies) {
     },
   });
 
-
   // Обработка ошибок
   server.setErrorHandler((error, request, reply) => {
     const reqLogger = request.log;
     if (error.statusCode && error.statusCode < 500) {
       reqLogger.info(error);
-    } else {
+    }
+    else {
       reqLogger.error({
         err: error,
         method: request.method,
@@ -53,7 +53,7 @@ export function createServer(dependencies: Dependencies) {
 
 export type Server = Awaited<ReturnType<typeof createServer>>;
 
-export function createServerManager(server: Server, options: { host: string, port: number }) {
+export function createServerManager(server: Server, options: { host: string; port: number }) {
   return {
     async start() {
       await server.listen({ port: options.port, host: options.host });
