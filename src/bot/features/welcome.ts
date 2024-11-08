@@ -7,7 +7,22 @@ const composer = new Composer<Context>();
 
 const feature = composer.chatType('private');
 
-feature.command('start', logHandle('command-start'), (ctx) => {
+feature.command('start', logHandle('command-start'), async (ctx) => {
+  const userId = ctx.from.id;
+
+  let user = await ctx.prisma.user.findUnique({
+    where: { telegramId: userId },
+  });
+
+  if (!user) {
+    user = await ctx.prisma.user.create({
+      data: {
+        telegramId: userId,
+        username: ctx.from.username || null,
+        interfaceLanguage: ctx.from.language_code,
+      },
+    });
+  }
   return ctx.reply(ctx.t('welcome'));
 });
 
