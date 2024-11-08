@@ -14,63 +14,58 @@ datasource db {
 }
 
 model User {
-  id                    Int       @id @default(autoincrement())
-  telegramId            BigInt    @unique
-  username              String?
-  uiLanguage            String    @default("en")
-  nativeLanguageCode    String?
-  learningLanguageCode  String?
-
-  nativeLanguage        Language? @relation("UserNativeLanguage", fields: [nativeLanguageCode], references: [code])
-  learningLanguage      Language? @relation("UserLearningLanguage", fields: [learningLanguageCode], references: [code])
-
-  wordsPerDay           Int       @default(10)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  id                   Int       @id @default(autoincrement())
+  telegramId           BigInt    @unique
+  username             String?
+  uiLanguage           String    @default("en")
+  nativeLanguageCode   String?
+  learningLanguageCode String?
+  //
+  nativeLanguage       Language? @relation("UserNativeLanguage", fields: [nativeLanguageCode], references: [code])
+  learningLanguage     Language? @relation("UserLearningLanguage", fields: [learningLanguageCode], references: [code])
+  //
+  wordsPerDay          Int       @default(10)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }
-
 
 model Language {
-  code                      String              @id
-  name                      String
-
-  usersNative               User[]              @relation("UserNativeLanguage")
-  usersLearning             User[]              @relation("UserLearningLanguage")
-
-  wordCollections           WordCollection[]    @relation("WordCollectionLanguage")
-  translationCollections    WordCollection[]    @relation("WordCollectionTranslationLanguage")
+  code                   String           @id
+  name                   String
+  //
+  usersNative            User[]           @relation("UserNativeLanguage")
+  usersLearning          User[]           @relation("UserLearningLanguage")
+  //
+  wordCollections        WordCollection[] @relation("WordCollectionLanguage")
+  translationCollections WordCollection[] @relation("WordCollectionTranslationLanguage")
 }
-
 
 model WordCollection {
-  id                        Int                 @id @default(autoincrement())
-  title                     String
-  desc                      String?
-
-  languageCode              String
-  translationLanguageCode   String
-
-  language                  Language            @relation("WordCollectionLanguage", fields: [languageCode], references: [code])
-  translationLanguage       Language            @relation("WordCollectionTranslationLanguage", fields: [translationLanguageCode], references: [code])
-
-  words                     Word[]
-
-  createdAt                 DateTime            @default(now())
-  updatedAt                 DateTime            @updatedAt
+  id                      Int      @id @default(autoincrement())
+  title                   String
+  desc                    String?
+  //
+  languageCode            String
+  translationLanguageCode String
+  //
+  language                Language @relation("WordCollectionLanguage", fields: [languageCode], references: [code])
+  translationLanguage     Language @relation("WordCollectionTranslationLanguage", fields: [translationLanguageCode], references: [code])
+  //
+  words                   Word[]
+  //
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 }
-
 
 model Word {
-  id                Int             @id @default(autoincrement())
-  word               String
-  translation        String
-  transcription      String?
-
-  wordCollectionId   Int
-  wordCollection     WordCollection  @relation(fields: [wordCollectionId], references: [id])
-
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  id               Int            @id @default(autoincrement())
+  word             String
+  translation      String
+  transcription    String?
+  //
+  wordCollectionId Int
+  wordCollection   WordCollection @relation(fields: [wordCollectionId], references: [id])
+  //
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
-
-
