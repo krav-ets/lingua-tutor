@@ -7,4 +7,5 @@ export default antfu({
   rules: {
     semi: ['error', 'always'], // Require semicolons at the end of statements
   },
+  ignores: ['prisma/migrations/'],
 });
