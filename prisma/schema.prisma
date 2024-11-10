@@ -14,19 +14,25 @@ datasource db {
 }
 
 model User {
-  id                   Int       @id @default(autoincrement())
-  telegramId           BigInt    @unique
+  id                   Int              @id @default(autoincrement())
+  telegramId           BigInt           @unique
   username             String?
-  uiLanguage           String    @default("en")
+  uiLanguage           String           @default("en")
   nativeLanguageCode   String?
   learningLanguageCode String?
+  wordsPerDay          Int              @default(10)
   //
-  nativeLanguage       Language? @relation("UserNativeLanguage", fields: [nativeLanguageCode], references: [code])
-  learningLanguage     Language? @relation("UserLearningLanguage", fields: [learningLanguageCode], references: [code])
+  wordCollections      WordCollection[] @relation("WordCollectionOwner")
   //
-  wordsPerDay          Int       @default(10)
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  nativeLanguage       Language?        @relation("UserNativeLanguage", fields: [nativeLanguageCode], references: [code])
+  learningLanguage     Language?        @relation("UserLearningLanguage", fields: [learningLanguageCode], references: [code])
+  //
+  userWords            WordProgress[]
+  //
+  reminders            Reminder[]
+  //
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
 }
 
 model Language {
@@ -51,6 +57,9 @@ model WordCollection {
   language                Language @relation("WordCollectionLanguage", fields: [languageCode], references: [code])
   translationLanguage     Language @relation("WordCollectionTranslationLanguage", fields: [translationLanguageCode], references: [code])
   //
+  ownerId                 Int?
+  owner                   User?    @relation("WordCollectionOwner", fields: [ownerId], references: [id])
+  //
   words                   Word[]
   //
   createdAt               DateTime @default(now())
@@ -62,10 +71,48 @@ model Word {
   word             String
   translation      String
   transcription    String?
+  info             Json
   //
   wordCollectionId Int
   wordCollection   WordCollection @relation(fields: [wordCollectionId], references: [id])
   //
+  userWords        WordProgress[]
+  //
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+}
+
+model WordProgress {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  wordId         Int
+  //
+  repetitions    Int       @default(0)
+  interval       Int       @default(1)
+  easeFactor     Float     @default(2.5)
+  quality        Int? // Последняя оценка качества от пользователя
+  status         String    @default("todo") // Возможные значения: "todo", "inProgress", "done"
+  //
+  lastReviewedAt DateTime? // Последняя дата повторения
+  nextReviewAt   DateTime? // Следующая дата повторения
+  //
+  user           User      @relation(fields: [userId], references: [id])
+  word           Word      @relation(fields: [wordId], references: [id])
+  //
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([userId, wordId])
+}
+
+model Reminder {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  time      DateTime
+  isActive  Boolean  @default(true)
+  //
+  user      User     @relation(fields: [userId], references: [id])
+  //
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
