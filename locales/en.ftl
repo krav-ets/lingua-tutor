@@ -20,3 +20,11 @@ admin-commands-updated = Commands updated.
 ## Unhandled Feature
 
 unhandled = Unrecognized command. Try /start
+
+## settings
+
+settings-native = Native language
+settings-learning = Learning language
+settings-ui = Interface language
+settings-categories = Categories
+settings-done = Done
