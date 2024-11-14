@@ -19,7 +19,7 @@ feature.command('start', logHandle('command-start'), async (ctx) => {
       data: {
         telegramId: userId,
         username: ctx.from.username || null,
-        interfaceLanguage: ctx.from.language_code,
+        uiLanguage: ctx.from.language_code,
       },
     });
   }
