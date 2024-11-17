@@ -23,6 +23,7 @@ model User {
   wordsPerDay          Int              @default(10)
   //
   wordCollections      WordCollection[] @relation("WordCollectionOwner")
+  selectedCollections  WordCollection[] @relation("UserSelectedCollections")
   //
   nativeLanguage       Language?        @relation("UserNativeLanguage", fields: [nativeLanguageCode], references: [code])
   learningLanguage     Language?        @relation("UserLearningLanguage", fields: [learningLanguageCode], references: [code])
@@ -61,6 +62,8 @@ model WordCollection {
   owner                   User?    @relation("WordCollectionOwner", fields: [ownerId], references: [id])
   //
   words                   Word[]
+  //
+  selectedByUsers         User[]   @relation("UserSelectedCollections")
   //
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
