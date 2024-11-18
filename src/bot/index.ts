@@ -7,10 +7,12 @@ import { createContextConstructor } from '#root/bot/context.js';
 import { greetingConversation } from '#root/bot/conversations/index.js';
 import { adminFeature } from '#root/bot/features/admin.js';
 import { languageFeature } from '#root/bot/features/language.js';
+import { settingsFeature } from '#root/bot/features/settings.js';
 import { unhandledFeature } from '#root/bot/features/unhandled.js';
 import { welcomeFeature } from '#root/bot/features/welcome.js';
 import { errorHandler } from '#root/bot/handlers/error.js';
 import { i18n, isMultipleLocales } from '#root/bot/i18n.js';
+import { settingsMenu } from '#root/bot/menus/settings.js';
 import { session } from '#root/bot/middlewares/session.js';
 import { updateLogger } from '#root/bot/middlewares/update-logger.js';
 import { autoChatAction } from '@grammyjs/auto-chat-action';
@@ -67,8 +69,12 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
   protectedBot.use(conversations());
   protectedBot.use(greetingConversation());
 
+  // Menus
+  protectedBot.use(settingsMenu);
+
   // Handlers
   protectedBot.use(welcomeFeature);
+  protectedBot.use(settingsFeature);
   protectedBot.use(adminFeature);
   if (isMultipleLocales)
     protectedBot.use(languageFeature);

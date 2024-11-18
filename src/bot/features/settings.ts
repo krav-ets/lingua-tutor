@@ -1,36 +1,14 @@
 import type { Context } from '#root/bot/context.js';
-import { changeLanguageData } from '#root/bot/callback-data/change-language.js';
-import { logHandle } from '#root/bot/helpers/logging.js';
-import { i18n } from '#root/bot/i18n.js';
-import { createChangeLanguageKeyboard } from '#root/bot/keyboards/change-language.js';
+import { settingsMenu } from '#root/bot/menus/settings.js';
 import { Composer } from 'grammy';
 
 const composer = new Composer<Context>();
 
-const feature = composer.chatType('private');
-
-feature.command('settings', logHandle('command-settings'), async (ctx) => {
-  return ctx.reply(ctx.t('language-select'), {
-    reply_markup: await createChangeLanguageKeyboard(ctx),
+// Command /settings open menu
+composer.command('settings', async (ctx) => {
+  await ctx.reply(ctx.t('main-settings'), {
+    reply_markup: settingsMenu,
   });
 });
 
-feature.callbackQuery(
-  changeLanguageData.filter(),
-  logHandle('keyboard-language-select'),
-  async (ctx) => {
-    const { code: languageCode } = changeLanguageData.unpack(
-      ctx.callbackQuery.data,
-    );
-
-    if (i18n.locales.includes(languageCode)) {
-      await ctx.i18n.setLocale(languageCode);
-
-      return ctx.editMessageText(ctx.t('language-changed'), {
-        reply_markup: await createChangeLanguageKeyboard(ctx),
-      });
-    }
-  },
-);
-
-export { composer as languageFeature };
+export { composer as settingsFeature };
