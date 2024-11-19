@@ -13,7 +13,6 @@ import { welcomeFeature } from '#root/bot/features/welcome.js';
 import { errorHandler } from '#root/bot/handlers/error.js';
 import { i18n, isMultipleLocales } from '#root/bot/i18n.js';
 import { settingsMenu } from '#root/bot/menus/settings.js';
-import { fetchUserMiddleware } from '#root/bot/middlewares/fetchUser.js';
 import { session } from '#root/bot/middlewares/session.js';
 import { setLocaleMiddleware } from '#root/bot/middlewares/setLocale.js';
 import { updateLogger } from '#root/bot/middlewares/update-logger.js';
@@ -68,7 +67,6 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
   protectedBot.use(hydrate());
   protectedBot.use(session({ getSessionKey, storage: options.botSessionStorage }));
   protectedBot.use(i18n);
-  protectedBot.use(fetchUserMiddleware);
   protectedBot.use(setLocaleMiddleware);
   protectedBot.use(conversations());
   protectedBot.use(greetingConversation());

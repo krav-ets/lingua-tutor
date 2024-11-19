@@ -9,7 +9,7 @@ import ISO6391 from 'iso-639-1';
 const nativeLanguageMenu = new Menu<Context>('native-language-menu')
   .dynamic(async (ctx, range) => {
     const userId = ctx.from?.id;
-    const user = ctx.user;
+    const user = await userRepository.findByTelegramId(userId);
     const languages = await languageRepository.findAll() ?? [];
 
     for (const { code } of languages) {
@@ -35,7 +35,7 @@ const nativeLanguageMenu = new Menu<Context>('native-language-menu')
 const learningLanguageMenu = new Menu<Context>('learning-language-menu')
   .dynamic(async (ctx, range) => {
     const userId = ctx.from?.id;
-    const user = ctx.user;
+    const user = await userRepository.findByTelegramId(userId);
     const languages = await languageRepository.findAll() ?? [];
     const filteredLanguages = languages.filter(({ code }) => code !== user?.nativeLanguageCode);
 
@@ -87,7 +87,7 @@ const uiLanguageMenu = new Menu<Context>('ui-language-menu')
 const categoriesMenu = new Menu<Context>('categories-menu')
   .dynamic(async (ctx, range) => {
     const userId = ctx.from?.id;
-    const user = ctx.user;
+    const user = await userRepository.findByTelegramId(userId);
     const userWordCollections = await wordCollectionRepository.findByLanguages(
       { language: user?.learningLanguageCode, translationLanguage: user?.nativeLanguageCode },
       user?.id,
@@ -125,7 +125,7 @@ const dailyWordsMenu = new Menu<Context>('daily-words-menu')
     const WORD_COUNT_LIST = [3, 5, 7, 10, 15, 25, 40];
 
     const userId = ctx.from?.id;
-    const user = ctx.user;
+    const user = await userRepository.findByTelegramId(userId);
 
     for (const count of WORD_COUNT_LIST) {
       const isActive = count === user?.wordsPerDay;
@@ -146,19 +146,19 @@ const dailyWordsMenu = new Menu<Context>('daily-words-menu')
   });
 
 async function nativeButton(ctx: Context) {
-  const user = ctx.user;
+  const user = await userRepository.findByTelegramId(ctx.from?.id);
   return `${ctx.t('settings-native')} [${user?.nativeLanguageCode || '--'}]`;
 };
 async function languageButton(ctx: Context) {
-  const user = ctx.user;
+  const user = await userRepository.findByTelegramId(ctx.from?.id);
   return `${ctx.t('settings-learning')} [${user?.learningLanguageCode || '--'}]`;
 };
 async function uiButton(ctx: Context) {
-  const user = ctx.user;
+  const user = await userRepository.findByTelegramId(ctx.from?.id);
   return `${ctx.t('settings-ui')} [${user?.uiLanguage || '--'}]`;
 };
 async function categoriesButton(ctx: Context) {
-  const user = ctx.user;
+  const user = await userRepository.findByTelegramId(ctx.from?.id);
   const userWordCollections = await wordCollectionRepository.findByLanguages(
     { language: user?.learningLanguageCode, translationLanguage: user?.nativeLanguageCode },
     user?.id,
@@ -166,7 +166,7 @@ async function categoriesButton(ctx: Context) {
   return `${ctx.t('settings-categories')} [${userWordCollections?.length || '--'}]`;
 };
 async function dailyButton(ctx: Context) {
-  const user = ctx.user;
+  const user = await userRepository.findByTelegramId(ctx.from?.id);
   return `${ctx.t('settings-daily')} [${user?.wordsPerDay || '--'}]`;
 };
 function doneButton(ctx: Context) {
