@@ -24,6 +24,9 @@
     "prepare": "husky || true"
   },
   "dependencies": {
+    "@fastify/autoload": "^6.0.2",
+    "@fastify/cors": "^10.0.1",
+    "@fastify/jwt": "^9.0.1",
     "@grammyjs/auto-chat-action": "^0.1.1",
     "@grammyjs/conversations": "^1.2.0",
     "@grammyjs/hydrate": "^1.4.1",
@@ -36,7 +39,6 @@
     "callback-data": "^1.1.1",
     "fastify": "^5.0.0",
     "fastify-cli": "^7.0.1",
-    "fastify-cors": "^6.1.0",
     "fastify-plugin": "^5.0.1",
     "grammy": "^1.30.0",
     "grammy-guard": "^0.5.0",
