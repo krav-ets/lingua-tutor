@@ -1,7 +1,6 @@
 #!/usr/bin/env tsx
 /* eslint-disable antfu/no-top-level-await */
 
-import type { PollingConfig, WebhookConfig } from '#root/config.js';
 import process from 'node:process';
 import { createBot } from '#root/bot/index.js';
 import { config } from '#root/config.js';
@@ -10,7 +9,7 @@ import { prisma } from '#root/prisma/index.js';
 import { createServer, createServerManager } from '#root/server/index.js';
 import { run, type RunnerHandle } from '@grammyjs/runner';
 
-async function startPolling(config: PollingConfig) {
+async function startBot() {
   const bot = createBot(config.botToken, {
     config,
     logger,
@@ -20,44 +19,52 @@ async function startPolling(config: PollingConfig) {
 
   // graceful shutdown
   onShutdown(async () => {
-    logger.info('Shutdown');
+    logger.info('Shutdown bot');
     await runner?.stop();
   });
 
-  await Promise.all([
-    bot.init(),
-    bot.api.deleteWebhook(),
-  ]);
+  await bot.init();
 
-  // connect to database
-  await prisma.$connect();
+  if (config.isWebhookMode) {
+    // set webhook if webhook mode
+    await bot.api.setWebhook(config.botWebhook, {
+      allowed_updates: config.botAllowedUpdates,
+      secret_token: config.botWebhookSecret,
+    });
+    logger.info({
+      msg: 'Webhook was set',
+      url: config.botWebhook,
+    });
+  }
+  else {
+    // delete ewbhook if polling mode
+    await bot.api.deleteWebhook();
+    logger.info('Webhook deleted for polling mode');
 
-  // start bot
-  runner = run(bot, {
-    runner: {
-      fetch: {
-        allowed_updates: config.botAllowedUpdates,
+    // start runner for polling
+    runner = run(bot, {
+      runner: {
+        fetch: {
+          allowed_updates: config.botAllowedUpdates,
+        },
       },
-    },
-  });
+    });
+    logger.info({
+      msg: 'Bot running in polling mode...',
+      username: bot.botInfo.username,
+    });
+  }
 
-  logger.info({
-    msg: 'Bot running...',
-    username: bot.botInfo.username,
-  });
+  return bot;
 }
 
-async function startWebhook(config: WebhookConfig) {
-  const bot = createBot(config.botToken, {
-    config,
-    logger,
-    prisma,
-  });
-  const server = createServer({
+async function startServer(bot: ReturnType<typeof createBot>) {
+  const server = await createServer({
     bot,
     config,
     logger,
   });
+
   const serverManager = createServerManager(server, {
     host: config.serverHost,
     port: config.serverPort,
@@ -65,15 +72,9 @@ async function startWebhook(config: WebhookConfig) {
 
   // graceful shutdown
   onShutdown(async () => {
-    logger.info('Shutdown');
+    logger.info('Shutdown server');
     await serverManager.stop();
   });
-
-  // connect to database
-  await prisma.$connect();
-
-  // to prevent receiving updates before the bot is ready
-  await bot.init();
 
   // start server
   const info = await serverManager.start();
@@ -81,23 +82,17 @@ async function startWebhook(config: WebhookConfig) {
     msg: 'Server started',
     url: info.url,
   });
-
-  // set webhook
-  await bot.api.setWebhook(config.botWebhook, {
-    allowed_updates: config.botAllowedUpdates,
-    secret_token: config.botWebhookSecret,
-  });
-  logger.info({
-    msg: 'Webhook was set',
-    url: config.botWebhook,
-  });
 }
 
 try {
-  if (config.isWebhookMode)
-    await startWebhook(config);
-  else if (config.isPollingMode)
-    await startPolling(config);
+  // connect to database
+  await prisma.$connect();
+
+  // start bot
+  const bot = await startBot();
+
+  // start server
+  await startServer(bot);
 }
 catch (error) {
   logger.error(error);

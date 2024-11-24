@@ -8,6 +8,8 @@ const baseConfigSchema = v.object({
   botToken: v.pipe(v.string(), v.regex(/^\d+:[\w-]+$/, 'Invalid token')),
   botAllowedUpdates: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.array(v.picklist(API_CONSTANTS.ALL_UPDATE_TYPES))), '[]'),
   botAdmins: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.array(v.number())), '[]'),
+  serverHost: v.optional(v.string(), '0.0.0.0'),
+  serverPort: v.optional(v.pipe(v.string(), v.transform(Number), v.number()), '80'),
 });
 
 const configSchema = v.variant('botMode', [
@@ -31,8 +33,6 @@ const configSchema = v.variant('botMode', [
       ...baseConfigSchema.entries,
       botWebhook: v.pipe(v.string(), v.url()),
       botWebhookSecret: v.pipe(v.string(), v.minLength(12)),
-      serverHost: v.optional(v.string(), '0.0.0.0'),
-      serverPort: v.optional(v.pipe(v.string(), v.transform(Number), v.number()), '80'),
     }),
     v.transform(input => ({
       ...input,
