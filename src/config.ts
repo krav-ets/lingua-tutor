@@ -12,40 +12,31 @@ const baseConfigSchema = v.object({
   serverPort: v.optional(v.pipe(v.string(), v.transform(Number), v.number()), '80'),
 });
 
-const configSchema = v.variant('botMode', [
-  // polling config
-  v.pipe(
-    v.object({
-      botMode: v.literal('polling'),
-      ...baseConfigSchema.entries,
-    }),
-    v.transform(input => ({
-      ...input,
-      isDebug: input.debug,
-      isWebhookMode: false as const,
-      isPollingMode: true as const,
-    })),
-  ),
-  // webhook config
-  v.pipe(
-    v.object({
-      botMode: v.literal('webhook'),
-      ...baseConfigSchema.entries,
-      botWebhook: v.pipe(v.string(), v.url()),
-      botWebhookSecret: v.pipe(v.string(), v.minLength(12)),
-    }),
-    v.transform(input => ({
-      ...input,
-      isDebug: input.debug,
-      isWebhookMode: true as const,
-      isPollingMode: false as const,
-    })),
-  ),
-]);
+const configSchema = v.pipe(
+  v.object({
+    botMode: v.picklist(['polling', 'webhook']),
+    ...baseConfigSchema.entries,
+    botWebhook: v.optional(v.pipe(v.string(), v.url())),
+    botWebhookSecret: v.optional(v.pipe(v.string(), v.minLength(12))),
+  }),
+  v.custom((value) => {
+    const config = value as v.InferInput<typeof configSchema>;
+    if (config.botMode === 'webhook') {
+      if (!config.botWebhook || !config.botWebhookSecret) {
+        return false;
+      }
+    }
+    return true; // Успешная валидация
+  }, '"botWebhook" and "botWebhookSecret" is required when "botMode" is "webhook"'),
+  v.transform(input => ({
+    ...input,
+    isDebug: input.debug,
+    isWebhookMode: input.botMode === 'webhook',
+    isPollingMode: input.botMode === 'polling',
+  })),
+);
 
 export type Config = v.InferOutput<typeof configSchema>;
-export type PollingConfig = v.InferOutput<typeof configSchema['options'][0]>;
-export type WebhookConfig = v.InferOutput<typeof configSchema['options'][1]>;
 
 export function createConfig(input: v.InferInput<typeof configSchema>) {
   return v.parse(configSchema, input);

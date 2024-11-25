@@ -25,7 +25,7 @@ async function startBot() {
 
   await bot.init();
 
-  if (config.isWebhookMode) {
+  if (config.isWebhookMode && config.botWebhook) {
     // set webhook if webhook mode
     await bot.api.setWebhook(config.botWebhook, {
       allowed_updates: config.botAllowedUpdates,
