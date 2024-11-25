@@ -1,8 +1,14 @@
 import type { Bot } from '#root/bot/index.js';
 import type { Config } from '#root/config.js';
 import type { Logger } from '#root/logger.js';
+import path, { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import AutoLoad from '@fastify/autoload';
 import Fastify from 'fastify';
 import { webhookCallback } from 'grammy';
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
 
 interface Dependencies {
   bot: Bot;
@@ -11,16 +17,35 @@ interface Dependencies {
 }
 
 export function createServer(dependencies: Dependencies) {
-  const { bot, config, logger } = dependencies;
+  const { bot, config } = dependencies;
 
-  // Создаем экземпляр Fastify
+  // create fastify instance
   const server = Fastify({
     logger: {
       level: config.isDebug ? 'debug' : 'info',
     },
   });
 
-  // Обработка ошибок
+  server.decorate('config', config);
+
+  // register autoload for plugins
+  server.register(AutoLoad, {
+    dir: join(__dirname, 'plugins'),
+    ignorePattern: /.+no-load\.js/,
+  });
+
+  // register autoload for routes
+  server.register(AutoLoad, {
+    dir: join(__dirname, 'routes'),
+    indexPattern: /.*routes(\.js|\.cjs)$/i,
+    ignorePattern: /.*\.js/,
+    autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
+    autoHooks: true,
+    cascadeHooks: true,
+    prefix: '/api',
+  });
+
+  // error handling
   server.setErrorHandler((error, request, reply) => {
     const reqLogger = request.log;
     if (error.statusCode && error.statusCode < 500) {
@@ -36,12 +61,7 @@ export function createServer(dependencies: Dependencies) {
     reply.status(error.statusCode || 500).send({ error: 'Oops! Something went wrong.' });
   });
 
-  // Маршрут для проверки статуса сервера
-  server.get('/', async (request, reply) => {
-    return { status: true };
-  });
-
-  // Обработка вебхуков
+  // registry webhook route
   if (config.isWebhookMode) {
     server.post('/webhook', webhookCallback(bot, 'fastify', {
       secretToken: config.botWebhookSecret,
