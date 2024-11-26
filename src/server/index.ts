@@ -23,7 +23,16 @@ export function createServer(dependencies: Dependencies) {
   const server = Fastify({
     logger: {
       level: config.isDebug ? 'debug' : 'info',
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          translateTime: 'HH:MM:ss Z',
+          ignore: 'pid,hostname',
+        },
+      },
     },
+    ignoreTrailingSlash: true,
+    caseSensitive: false,
   });
 
   server.decorate('config', config);
@@ -42,7 +51,9 @@ export function createServer(dependencies: Dependencies) {
     autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
     autoHooks: true,
     cascadeHooks: true,
-    prefix: '/api',
+    options: {
+      prefix: '/api',
+    },
   });
 
   // error handling
@@ -58,6 +69,7 @@ export function createServer(dependencies: Dependencies) {
         path: request.url,
       });
     }
+
     reply.status(error.statusCode || 500).send({ error: 'Oops! Something went wrong.' });
   });
 
