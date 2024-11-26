@@ -10,6 +10,7 @@ const baseConfigSchema = v.object({
   botAdmins: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.array(v.number())), '[]'),
   serverHost: v.optional(v.string(), '0.0.0.0'),
   serverPort: v.optional(v.pipe(v.string(), v.transform(Number), v.number()), '80'),
+  jwtSecret: v.string(),
 });
 
 const configSchema = v.pipe(
