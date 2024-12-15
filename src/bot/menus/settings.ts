@@ -3,6 +3,7 @@ import { i18n } from '#root/bot/i18n.js';
 import { languageRepository } from '#root/repositories/language.repository.js';
 import { userRepository } from '#root/repositories/user.repository.js';
 import { wordCollectionRepository } from '#root/repositories/word-collection.repository.js';
+import { addCollectionToUser, removeCollectionFromUser } from '#root/services/user.service.js';
 import { Menu } from '@grammyjs/menu';
 import ISO6391 from 'iso-639-1';
 
@@ -87,6 +88,9 @@ const uiLanguageMenu = new Menu<Context>('ui-language-menu')
 const categoriesMenu = new Menu<Context>('categories-menu')
   .dynamic(async (ctx, range) => {
     const userId = ctx.from?.id;
+    if (!userId) {
+      return;
+    }
     const user = await userRepository.findByTelegramId(userId);
     const userWordCollections = await wordCollectionRepository.findByLanguages(
       { language: user?.learningLanguageCode, translationLanguage: user?.nativeLanguageCode },
@@ -103,11 +107,12 @@ const categoriesMenu = new Menu<Context>('categories-menu')
       const label = `${isSelected ? '✅ ' : ''}${title} [${languageCode}-${translationLanguageCode}]`;
 
       range.text(label, async (ctx) => {
-        await userRepository.updateByTelegramId(userId, {
-          selectedCollections: {
-            [isSelected ? 'disconnect' : 'connect']: { id },
-          },
-        });
+        if (isSelected) {
+          await removeCollectionFromUser(userId, id);
+        }
+        else {
+          await addCollectionToUser(userId, id);
+        }
 
         await ctx.menu.update();
       });
