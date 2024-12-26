@@ -4,7 +4,7 @@ import { wordProgressRepository } from '#root/repositories/word-progress.reposit
 
 export async function addCollectionToUser(userId: number, collectionId: number): Promise<void> {
   // add collection to user
-  await userRepository.updateByTelegramId(userId, {
+  await userRepository.update(userId, {
     selectedCollections: {
       connect: { id: collectionId },
     },
@@ -17,12 +17,13 @@ export async function addCollectionToUser(userId: number, collectionId: number):
   if (wordIds && wordIds.length > 0) {
     const wordProgressData = wordIds.map(wordId => ({ userId, wordId, status: 'todo' }));
     await wordProgressRepository.createMany(wordProgressData);
+    await wordProgressRepository.updateManyByUser(userId, wordIds, { status: 'todo' });
   }
 }
 
 export async function removeCollectionFromUser(userId: number, collectionId: number) {
   // remove collection from user
-  await userRepository.updateByTelegramId(userId, {
+  await userRepository.update(userId, {
     selectedCollections: {
       disconnect: { id: collectionId },
     },
