@@ -28,6 +28,13 @@ class UserRepository {
     });
   }
 
+  async update(id: number | undefined, data: Prisma.UserUpdateInput): Promise<User> {
+    return this.storage.user.update({
+      where: { id },
+      data,
+    });
+  }
+
   async create(data: Prisma.UserCreateInput): Promise<User> {
     return this.storage.user.create({
       data,
