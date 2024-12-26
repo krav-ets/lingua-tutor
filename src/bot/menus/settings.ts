@@ -9,8 +9,8 @@ import ISO6391 from 'iso-639-1';
 
 const nativeLanguageMenu = new Menu<Context>('native-language-menu')
   .dynamic(async (ctx, range) => {
-    const userId = ctx.from?.id;
-    const user = await userRepository.findByTelegramId(userId);
+    const tgUserId = ctx.from?.id;
+    const user = await userRepository.findByTelegramId(tgUserId);
     const languages = await languageRepository.findAll() ?? [];
 
     for (const { code } of languages) {
@@ -18,7 +18,7 @@ const nativeLanguageMenu = new Menu<Context>('native-language-menu')
       const label = `${isActive ? '✅ ' : ''}${ISO6391.getNativeName(code)}`;
 
       range.text(label, async (ctx) => {
-        await userRepository.updateByTelegramId(userId, {
+        await userRepository.updateByTelegramId(tgUserId, {
           nativeLanguage: { connect: { code } },
         });
 
@@ -35,8 +35,8 @@ const nativeLanguageMenu = new Menu<Context>('native-language-menu')
 
 const learningLanguageMenu = new Menu<Context>('learning-language-menu')
   .dynamic(async (ctx, range) => {
-    const userId = ctx.from?.id;
-    const user = await userRepository.findByTelegramId(userId);
+    const tgUserId = ctx.from?.id;
+    const user = await userRepository.findByTelegramId(tgUserId);
     const languages = await languageRepository.findAll() ?? [];
     const filteredLanguages = languages.filter(({ code }) => code !== user?.nativeLanguageCode);
 
@@ -45,7 +45,7 @@ const learningLanguageMenu = new Menu<Context>('learning-language-menu')
       const label = `${isActive ? '✅ ' : ''}${ISO6391.getNativeName(code)}`;
 
       range.text(label, async (ctx) => {
-        await userRepository.updateByTelegramId(userId, {
+        await userRepository.updateByTelegramId(tgUserId, {
           learningLanguage: { connect: { code } },
         });
 
@@ -62,7 +62,7 @@ const learningLanguageMenu = new Menu<Context>('learning-language-menu')
 
 const uiLanguageMenu = new Menu<Context>('ui-language-menu')
   .dynamic(async (ctx, range) => {
-    const userId = ctx.from?.id;
+    const tgUserId = ctx.from?.id;
     const currentLocaleCode = await ctx.i18n.getLocale();
     const allAvailableLocales = i18n.locales;
     for (const code of allAvailableLocales) {
@@ -70,7 +70,7 @@ const uiLanguageMenu = new Menu<Context>('ui-language-menu')
       const label = `${isActive ? '✅ ' : ''}${ISO6391.getNativeName(code)}`;
 
       range.text(label, async (ctx) => {
-        await userRepository.updateByTelegramId(userId, { uiLanguage: code });
+        await userRepository.updateByTelegramId(tgUserId, { uiLanguage: code });
         await ctx.i18n.setLocale(code);
         await ctx.editMessageText(ctx.t('settings-ui-description'));
 
@@ -87,11 +87,14 @@ const uiLanguageMenu = new Menu<Context>('ui-language-menu')
 
 const categoriesMenu = new Menu<Context>('categories-menu')
   .dynamic(async (ctx, range) => {
-    const userId = ctx.from?.id;
-    if (!userId) {
+    const tgUserId = ctx.from?.id;
+    if (!tgUserId) {
       return;
     }
-    const user = await userRepository.findByTelegramId(userId);
+    const user = await userRepository.findByTelegramId(tgUserId);
+    if (!user) {
+      return;
+    }
     const userWordCollections = await wordCollectionRepository.findByLanguages(
       { language: user?.learningLanguageCode, translationLanguage: user?.nativeLanguageCode },
       user?.id,
@@ -108,10 +111,10 @@ const categoriesMenu = new Menu<Context>('categories-menu')
 
       range.text(label, async (ctx) => {
         if (isSelected) {
-          await removeCollectionFromUser(userId, id);
+          await removeCollectionFromUser(user.id, id);
         }
         else {
-          await addCollectionToUser(userId, id);
+          await addCollectionToUser(user.id, id);
         }
 
         await ctx.menu.update();
@@ -129,15 +132,15 @@ const dailyWordsMenu = new Menu<Context>('daily-words-menu')
   .dynamic(async (ctx, range) => {
     const WORD_COUNT_LIST = [3, 5, 7, 10, 15, 25, 40];
 
-    const userId = ctx.from?.id;
-    const user = await userRepository.findByTelegramId(userId);
+    const tgUserId = ctx.from?.id;
+    const user = await userRepository.findByTelegramId(tgUserId);
 
     for (const count of WORD_COUNT_LIST) {
       const isActive = count === user?.wordsPerDay;
       const label = `${isActive ? '✅ ' : ''}${count}`;
 
       range.text(label, async (ctx) => {
-        await userRepository.updateByTelegramId(userId, { wordsPerDay: count });
+        await userRepository.updateByTelegramId(tgUserId, { wordsPerDay: count });
 
         await ctx.menu.update();
       });
