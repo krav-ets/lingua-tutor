@@ -50,7 +50,7 @@ export function createServer(dependencies: Dependencies) {
     ignorePattern: /.*\.js/,
     autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
     autoHooks: true,
-    cascadeHooks: true,
+    cascadeHooks: false,
     options: {
       prefix: '/api',
     },
