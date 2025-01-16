@@ -20,7 +20,7 @@ model User {
   uiLanguage           String           @default("en")
   nativeLanguageCode   String?
   learningLanguageCode String?
-  wordsPerDay          Int              @default(10)
+  wordsPerDay          Int              @default(7)
   //
   wordCollections      WordCollection[] @relation("WordCollectionOwner")
   selectedCollections  WordCollection[] @relation("UserSelectedCollections")
@@ -67,6 +67,8 @@ model WordCollection {
   //
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
+
+  @@unique([title, languageCode, translationLanguageCode])
 }
 
 model Word {

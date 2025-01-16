@@ -22,6 +22,10 @@ down-db:
 studio:
 	npx prisma studio
 
+# seeding database
+seed:
+	npx prisma db seed
+
 # Lint the code to ensure code style consistency
 lint:
 	npm run lint
