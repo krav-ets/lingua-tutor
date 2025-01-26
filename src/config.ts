@@ -5,7 +5,7 @@ import * as v from 'valibot';
 const baseConfigSchema = v.object({
   debug: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.boolean()), 'false'),
   logLevel: v.optional(v.pipe(v.string(), v.picklist(['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'])), 'info'),
-  botToken: v.pipe(v.string(), v.regex(/^\d+:[\w-]+$/, 'Invalid token')),
+  botToken: v.optional(v.pipe(v.string(), v.regex(/^\d+:[\w-]+$/, 'Invalid token'))),
   botAllowedUpdates: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.array(v.picklist(API_CONSTANTS.ALL_UPDATE_TYPES))), '[]'),
   botAdmins: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.array(v.number())), '[]'),
   serverHost: v.optional(v.string(), '0.0.0.0'),
@@ -15,20 +15,25 @@ const baseConfigSchema = v.object({
 
 const configSchema = v.pipe(
   v.object({
-    botMode: v.picklist(['polling', 'webhook']),
+    botMode: v.optional(v.picklist(['polling', 'webhook'])),
     ...baseConfigSchema.entries,
     botWebhook: v.optional(v.pipe(v.string(), v.url())),
     botWebhookSecret: v.optional(v.pipe(v.string(), v.minLength(12))),
   }),
   v.custom((value) => {
     const config = value as v.InferInput<typeof configSchema>;
+
+    if (config.botToken && !config.botMode) {
+      return false;
+    }
+
     if (config.botMode === 'webhook') {
       if (!config.botWebhook || !config.botWebhookSecret) {
         return false;
       }
     }
     return true; // Успешная валидация
-  }, '"botWebhook" and "botWebhookSecret" is required when "botMode" is "webhook"'),
+  }, 'If "botToken" is provided, "botMode" is required. If "botMode" is "webhook", "botWebhook" and "botWebhookSecret" are required.'),
   v.transform(input => ({
     ...input,
     isDebug: input.debug,
@@ -70,7 +75,8 @@ function createConfigFromEnvironment() {
   }
 
   try {
-    process.loadEnvFile();
+    process.loadEnvFile(process.env.TEST && '.env.test');
+    console.log(process.env);
   }
   catch {
     // No .env file found

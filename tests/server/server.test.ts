@@ -1,7 +1,7 @@
-import { createBot } from '#root/bot/index.js';
+// import { createBot } from '#root/bot/index.js';
 import { config } from '#root/config.js';
 import { logger } from '#root/logger.js';
-import { prisma } from '#root/prisma/index.js';
+// import { prisma } from '#root/prisma/index.js';
 import { createServer } from '#root/server/index.js';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
@@ -10,8 +10,8 @@ describe('fastify server', () => {
   let server: Awaited<ReturnType<typeof createServer>>;
 
   beforeAll(async () => {
-    const bot = createBot(config.botToken, { config, logger, prisma });
-    server = await createServer({ bot, config, logger });
+    // const bot = createBot(config.botToken, { config, logger, prisma });
+    server = await createServer({ config, logger });
     await server.ready();
   });
 

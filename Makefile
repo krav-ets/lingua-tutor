@@ -10,13 +10,25 @@ build:
 dev:
 	npm run dev
 
+# Run the application tests
+test:
+	npm run test
+
 # Start the database in Docker
 up-db:
 	docker-compose up -d db
 
+# Start the test database in Docker
+up-test-db:
+	docker-compose up -d test-db
+
 # Stop the database
 down-db:
 	docker-compose down
+
+# Stop the test database
+down-test-db:
+	docker-compose down -v test-db
 
 # run prisma studio
 studio:

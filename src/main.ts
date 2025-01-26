@@ -10,6 +10,9 @@ import { createServer, createServerManager } from '#root/server/index.js';
 import { run, type RunnerHandle } from '@grammyjs/runner';
 
 async function startBot() {
+  if (!config.botToken) {
+    throw new Error('Bot token is required');
+  }
   const bot = createBot(config.botToken, {
     config,
     logger,

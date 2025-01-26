@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url); // get the resolved path to t
 const __dirname = path.dirname(__filename); // get the name of the directory
 
 interface Dependencies {
-  bot: Bot;
+  bot?: Bot;
   config: Config;
   logger: Logger;
 }
@@ -74,7 +74,7 @@ export function createServer(dependencies: Dependencies) {
   });
 
   // registry webhook route
-  if (config.isWebhookMode) {
+  if (config.isWebhookMode && bot) {
     server.post('/webhook', webhookCallback(bot, 'fastify', {
       secretToken: config.botWebhookSecret,
     }));
