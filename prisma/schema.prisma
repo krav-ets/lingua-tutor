@@ -93,7 +93,7 @@ model WordProgress {
   wordId         Int
   //
   repetitions    Int       @default(0)
-  interval       Int       @default(1)
+  interval       Int       @default(0)
   easeFactor     Float     @default(2.5)
   quality        Int? // Последняя оценка качества от пользователя
   status         String    @default("todo") // Возможные значения: "todo", "inProgress", "pause", "done"

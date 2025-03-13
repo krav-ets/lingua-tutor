@@ -76,7 +76,6 @@ function createConfigFromEnvironment() {
 
   try {
     process.loadEnvFile(process.env.TEST && '.env.test');
-    console.log(process.env);
   }
   catch {
     // No .env file found
