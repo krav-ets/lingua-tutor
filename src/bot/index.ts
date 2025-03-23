@@ -4,10 +4,12 @@ import type { Logger } from '#root/logger.js';
 import type { PrismaClientX } from '#root/prisma/index.js';
 import type { BotConfig, StorageAdapter } from 'grammy';
 import { createContextConstructor } from '#root/bot/context.js';
-import { greetingConversation } from '#root/bot/conversations/index.js';
+import { greetingConversation, repeatWordsConversation, studyWordsConversation } from '#root/bot/conversations/index.js';
 import { adminFeature } from '#root/bot/features/admin.js';
 import { languageFeature } from '#root/bot/features/language.js';
+import { repeatWordsFeature } from '#root/bot/features/repeat-words.ts';
 import { settingsFeature } from '#root/bot/features/settings.js';
+import { studyWordsFeature } from '#root/bot/features/study-words.ts';
 import { unhandledFeature } from '#root/bot/features/unhandled.js';
 import { welcomeFeature } from '#root/bot/features/welcome.js';
 import { errorHandler } from '#root/bot/handlers/error.js';
@@ -70,6 +72,8 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
   protectedBot.use(setLocaleMiddleware);
   protectedBot.use(conversations());
   protectedBot.use(greetingConversation());
+  protectedBot.use(repeatWordsConversation());
+  protectedBot.use(studyWordsConversation());
 
   // Menus
   protectedBot.use(settingsMenu);
@@ -78,6 +82,8 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
   protectedBot.use(welcomeFeature);
   protectedBot.use(settingsFeature);
   protectedBot.use(adminFeature);
+  protectedBot.use(studyWordsFeature);
+  protectedBot.use(repeatWordsFeature);
   if (isMultipleLocales)
     protectedBot.use(languageFeature);
 
