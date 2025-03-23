@@ -1,6 +1,6 @@
 import { userRepository } from '#root/repositories/user.repository.js';
-import { wordRepository } from '#root/repositories/word.repository.js';
 import { wordProgressRepository } from '#root/repositories/word-progress.repository.js';
+import { wordRepository } from '#root/repositories/word.repository.js';
 
 export async function addCollectionToUser(userId: number, collectionId: number): Promise<void> {
   // add collection to user
