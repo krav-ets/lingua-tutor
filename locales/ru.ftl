@@ -1,8 +1,10 @@
 ## Commands
 
 start-command-description = Стартовать бота
+settings-command-description = Пользовательские настройки
 language-command-description = Изменить язык интерфейса
-setcommands-command-description = Команды бота
+setcommands-command-description = Обновить команды бота
+study-words-command-description = Изучать слова
 
 ## Welcome Feature
 
@@ -11,6 +13,7 @@ welcome = Добро пожаловать!
 ## Common
 done = Готово
 save = Сохранить
+finish = Завершить
 
 ## Language Feature
 
@@ -40,3 +43,7 @@ settings-ui-description = Выберите язык интерфейса
 settings-categories-description = Выберите подборки слов для изучения
 settings-daily-description = Выберите количество новых слов в день
 settings-done-description = Настройки успешно изменены
+
+## confirmation keyboard
+confirmation-yes = Да
+confirmation-no = Нет

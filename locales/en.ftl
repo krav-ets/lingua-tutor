@@ -1,9 +1,10 @@
 ## Commands
 
 start-command-description = Start the bot
+settings-command-description = User settings
 language-command-description = Change language
 setcommands-command-description = Set bot commands
-
+study-words-command-description = Study words
 ## Welcome Feature
 
 welcome = Welcome!
@@ -11,6 +12,7 @@ welcome = Welcome!
 ## Common
 done = Done
 save = Save
+finish = Finish
 
 ## Language Feature
 
@@ -40,3 +42,7 @@ settings-ui-description = Select interface language
 settings-categories-description = Select categories of words to study
 settings-daily-description = Select the number of new words per day
 settings-done-description = Settings updated successfully
+
+## confirmation keyboard
+confirmation-yes = Yes
+confirmation-no = No
