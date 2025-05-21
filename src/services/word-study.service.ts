@@ -28,7 +28,7 @@ export async function getNextWordToRepeat(userId: number): Promise<Word | null> 
     throw new Error('USER_NOT_FOUND');
   }
 
-  return wordProgressRepository.findNextWordToStudy(userId);
+  return wordProgressRepository.findWordToRepeat(userId);
 }
 
 export async function reviewWord({ userId, wordId, quality }: ReviewWordParams): Promise<WordProgress> {
