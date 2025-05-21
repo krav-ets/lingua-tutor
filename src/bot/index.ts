@@ -5,6 +5,7 @@ import type { PrismaClientX } from '#root/prisma/index.js';
 import type { BotConfig, StorageAdapter } from 'grammy';
 import { createContextConstructor } from '#root/bot/context.js';
 import { greetingConversation, repeatWordsConversation, studyWordsConversation } from '#root/bot/conversations/index.js';
+import { addWordFeature } from '#root/bot/features/add-word.js';
 import { adminFeature } from '#root/bot/features/admin.js';
 import { languageFeature } from '#root/bot/features/language.js';
 import { repeatWordsFeature } from '#root/bot/features/repeat-words.ts';
@@ -84,6 +85,7 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
   protectedBot.use(adminFeature);
   protectedBot.use(studyWordsFeature);
   protectedBot.use(repeatWordsFeature);
+  protectedBot.use(addWordFeature);
   if (isMultipleLocales)
     protectedBot.use(languageFeature);
 
