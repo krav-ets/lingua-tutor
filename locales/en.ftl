@@ -46,3 +46,14 @@ settings-done-description = Settings updated successfully
 ## confirmation keyboard
 confirmation-yes = Yes
 confirmation-no = No
+
+## study words and repeat words conversations
+no-more-new-words = No more new words. Would you like to review the words you've already studied?
+no-more-reviewed-words = No more words to review.
+study-finished = Study completed
+
+## rate word
+rate-word-0 = I don't know
+rate-word-3 = Hard to remember
+rate-word-4 = Quickly remembered
+rate-word-5 = I know

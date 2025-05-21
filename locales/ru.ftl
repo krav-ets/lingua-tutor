@@ -16,16 +16,13 @@ save = Сохранить
 finish = Завершить
 
 ## Language Feature
-
 language-select = Пожалуйста, выберите ваш язык
 language-changed = Язык успешно изменен.
 
 ## Admin Feature
-
 admin-commands-updated = Команды обновлены.
 
 ## Unhandled Feature
-
 unhandled = Неизвестная команда. Попробуйте /start
 
 ## settings
@@ -47,3 +44,14 @@ settings-done-description = Настройки успешно изменены
 ## confirmation keyboard
 confirmation-yes = Да
 confirmation-no = Нет
+
+## study words and repeat words conversations
+no-more-new-words = Новые слова закончились. Повторим уже изучаемые?
+no-more-reviewed-words = Cлова для повторения закончились.
+study-finished = Обучение завершено
+
+## rate word
+rate-word-0 = Не знаю
+rate-word-3 = Тяжело вспоминал
+rate-word-4 = Быстро вспомнил
+rate-word-5 = Знаю
