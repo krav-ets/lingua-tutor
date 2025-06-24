@@ -1,8 +1,10 @@
 import type { Context } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
 import { rateWordData } from '#root/bot/callback-data/rate-word.ts';
+import { showAnswerData } from '#root/bot/callback-data/show-answer.ts';
 import { i18n } from '#root/bot/i18n.js';
 import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.ts';
+import { createShowAnswerKeyboard } from '#root/bot/keyboards/show-answer.ts';
 import { userRepository } from '#root/repositories/user.repository.ts';
 import { getNextWordToRepeat, reviewWord } from '#root/services/word-study.service.ts';
 import { createConversation } from '@grammyjs/conversations';
@@ -27,39 +29,60 @@ export function repeatWordsConversation() {
           return await ctx.reply(ctx.t('study-finished'));
         }
 
-        // Клавиатура с вариантами оценки и кнопкой завершения
-        const keyboard = await createRateWordKeyboard(ctx);
+        // Сначала показываем только слово и транскрипцию с кнопкой "Показать ответ"
+        const initialMessage = `<b>${word.word}</b> ${word.transcription}`;
+        const showAnswerKeyboard = createShowAnswerKeyboard(ctx);
 
-        const message = `<b>${word.translation}</b>
-<tg-spoiler>${word.word} ${word.transcription}</tg-spoiler>`;
-
-        await ctx.reply(message, {
-          reply_markup: keyboard,
+        const initialReply = await ctx.reply(initialMessage, {
+          reply_markup: showAnswerKeyboard,
         });
 
-        // Ждем ответа пользователя
-        const response = await conversation.waitFor('callback_query:data');
-        const callbackData = rateWordData.unpack(response.callbackQuery.data);
+        // Ждем нажатия кнопки "Показать ответ"
+        const showAnswerResponse = await conversation.waitFor('callback_query:data');
+        if (!showAnswerData.unpack(showAnswerResponse.callbackQuery.data)) {
+          continue;
+        }
 
-        const updatedMessage = `${message}
+        // После нажатия показываем полное сообщение с переводом и клавиатурой оценок
+        const fullMessage = `<b>${word.word}</b> ${word.transcription}
+<b>${word.translation}</b>`;
+
+        // Клавиатура с вариантами оценки и кнопкой завершения
+        const rateKeyboard = await createRateWordKeyboard(ctx);
+
+        await ctx.api.editMessageText(
+          ctx.chat!.id,
+          initialReply.message_id,
+          fullMessage,
+          {
+            reply_markup: rateKeyboard,
+          },
+        );
+
+        // Ждем ответа пользователя с оценкой
+        const rateResponse = await conversation.waitFor('callback_query:data');
+        const callbackData = rateWordData.unpack(rateResponse.callbackQuery.data);
+
+        // Если пользователь нажал "Завершить"
+        if (callbackData.isFinish) {
+          await ctx.api.editMessageText(
+            ctx.chat!.id,
+            initialReply.message_id,
+            ctx.t('study-finished'),
+          );
+          return;
+        }
+
+        const updatedMessage = `${fullMessage}
 Ваш результат: ${callbackData.rate}`;
 
         await ctx.api.editMessageText(
           ctx.chat!.id,
-          response.callbackQuery.message!.message_id,
+          rateResponse.callbackQuery.message!.message_id,
           updatedMessage,
         );
 
-        // Если пользователь нажал "Завершить"
-        if (callbackData.isFinish) {
-          await ctx.reply(ctx.t('study-finished'));
-          return;
-        }
-
         await reviewWord({ userId: user.id, wordId: word.id, quality: callbackData.rate });
-
-        // Обработка оценки (здесь можно добавить сохранение в БД)
-        // console.log(`Word ${word.id} rated with score ${callbackData.rate}`);
       }
     },
     REPEAT_WORDS_CONVERSATION,

@@ -5,10 +5,12 @@ import { InlineKeyboard } from 'grammy';
 
 export async function createRateWordKeyboard(ctx: Context) {
   const rates = [
-    { title: 'rate-word-0', value: 0 }, // "Не знаю" (0)
-    { title: 'rate-word-3', value: 3 }, // "Тяжело вспоминал" (3)
-    { title: 'rate-word-4', value: 4 }, // "Быстро вспомнил" (4)
-    { title: 'rate-word-5', value: 5 }, // "Знаю" (5)
+    { title: 'rate-word-0', value: 0 },
+    { title: 'rate-word-1', value: 1 },
+    { title: 'rate-word-2', value: 2 },
+    { title: 'rate-word-3', value: 3 },
+    { title: 'rate-word-4', value: 4 },
+    { title: 'rate-word-5', value: 5 },
   ];
 
   const buttons = chunk(
@@ -19,7 +21,7 @@ export async function createRateWordKeyboard(ctx: Context) {
         isFinish: false,
       }),
     })),
-    4,
+    6,
   );
 
   const finishButton = [{

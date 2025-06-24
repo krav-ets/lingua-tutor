@@ -53,7 +53,11 @@ no-more-reviewed-words = No more words to review.
 study-finished = Study completed
 
 ## rate word
-rate-word-0 = I don't know
-rate-word-3 = Hard to remember
-rate-word-4 = Quickly remembered
-rate-word-5 = I know
+rate-word-0 = 0
+rate-word-1 = 1
+rate-word-2 = 2
+rate-word-3 = 3
+rate-word-4 = 4
+rate-word-5 = 5
+
+show-answer = Show answer

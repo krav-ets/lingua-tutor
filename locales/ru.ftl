@@ -51,7 +51,11 @@ no-more-reviewed-words = Cлова для повторения закончил�
 study-finished = Обучение завершено
 
 ## rate word
-rate-word-0 = Не знаю
-rate-word-3 = Тяжело вспоминал
-rate-word-4 = Быстро вспомнил
-rate-word-5 = Знаю
+rate-word-0 = 0
+rate-word-1 = 1
+rate-word-2 = 2
+rate-word-3 = 3
+rate-word-4 = 4
+rate-word-5 = 5
+
+show-answer = Показать ответ
