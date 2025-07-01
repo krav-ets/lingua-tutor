@@ -2,12 +2,11 @@
 FROM node:20-bookworm AS builder
 WORKDIR /app
 
-COPY package*.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile
+COPY package*.json ./
+RUN npm ci
 
 COPY . .
-RUN pnpm run build                     # → dist/
-
+RUN npm run build
 # ---------- runtime (final) ----------
 FROM node:20-slim
 ENV NODE_ENV=production
