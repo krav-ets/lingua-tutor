@@ -1,5 +1,5 @@
 import type { Context } from '#root/bot/context.js';
-import { addWordData } from '#root/bot/callback-data/add-word.ts';
+import { addWordData } from '#root/bot/callback-data/add-word.js';
 // import { chunk } from '#root/bot/helpers/keyboard.js';
 import { logHandle } from '#root/bot/helpers/logging.js';
 import { translateWithLLM } from '#root/llm/index.js';

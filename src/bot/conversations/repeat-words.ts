@@ -1,12 +1,12 @@
 import type { Context } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
-import { rateWordData } from '#root/bot/callback-data/rate-word.ts';
-import { showAnswerData } from '#root/bot/callback-data/show-answer.ts';
+import { rateWordData } from '#root/bot/callback-data/rate-word.js';
+import { showAnswerData } from '#root/bot/callback-data/show-answer.js';
 import { i18n } from '#root/bot/i18n.js';
-import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.ts';
-import { createShowAnswerKeyboard } from '#root/bot/keyboards/show-answer.ts';
-import { userRepository } from '#root/repositories/user.repository.ts';
-import { getNextWordToRepeat, reviewWord } from '#root/services/word-study.service.ts';
+import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.js';
+import { createShowAnswerKeyboard } from '#root/bot/keyboards/show-answer.js';
+import { userRepository } from '#root/repositories/user.repository.js';
+import { getNextWordToRepeat, reviewWord } from '#root/services/word-study.service.js';
 import { createConversation } from '@grammyjs/conversations';
 
 export const REPEAT_WORDS_CONVERSATION = 'repeat-words';

@@ -9,7 +9,7 @@
         "./src/*"
       ]
     },
-    "allowImportingTsExtensions": true,
+    // "allowImportingTsExtensions": true,
     "strict": true,
     "noEmit": true,
     "outDir": "build",

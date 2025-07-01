@@ -1,13 +1,13 @@
 import type { Context } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
-import { confirmationData } from '#root/bot/callback-data/confirmation.ts';
-import { rateWordData } from '#root/bot/callback-data/rate-word.ts';
+import { confirmationData } from '#root/bot/callback-data/confirmation.js';
+import { rateWordData } from '#root/bot/callback-data/rate-word.js';
 import { REPEAT_WORDS_CONVERSATION } from '#root/bot/conversations/index.js';
 import { i18n } from '#root/bot/i18n.js';
-import { createConfirmationKeyboard } from '#root/bot/keyboards/confirmation.ts';
-import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.ts';
-import { userRepository } from '#root/repositories/user.repository.ts';
-import { getNextWordToStudy, reviewWord } from '#root/services/word-study.service.ts';
+import { createConfirmationKeyboard } from '#root/bot/keyboards/confirmation.js';
+import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.js';
+import { userRepository } from '#root/repositories/user.repository.js';
+import { getNextWordToStudy, reviewWord } from '#root/services/word-study.service.js';
 import { createConversation } from '@grammyjs/conversations';
 
 export const STUDY_WORDS_CONVERSATION = 'study-words';

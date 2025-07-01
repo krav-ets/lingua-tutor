@@ -8,9 +8,9 @@ import { greetingConversation, repeatWordsConversation, studyWordsConversation }
 import { addWordFeature } from '#root/bot/features/add-word.js';
 import { adminFeature } from '#root/bot/features/admin.js';
 import { languageFeature } from '#root/bot/features/language.js';
-import { repeatWordsFeature } from '#root/bot/features/repeat-words.ts';
+import { repeatWordsFeature } from '#root/bot/features/repeat-words.js';
 import { settingsFeature } from '#root/bot/features/settings.js';
-import { studyWordsFeature } from '#root/bot/features/study-words.ts';
+import { studyWordsFeature } from '#root/bot/features/study-words.js';
 import { unhandledFeature } from '#root/bot/features/unhandled.js';
 import { welcomeFeature } from '#root/bot/features/welcome.js';
 import { errorHandler } from '#root/bot/handlers/error.js';

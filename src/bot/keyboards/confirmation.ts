@@ -1,5 +1,5 @@
 import type { Context } from '#root/bot/context.js';
-import { confirmationData } from '#root/bot/callback-data/confirmation.ts';
+import { confirmationData } from '#root/bot/callback-data/confirmation.js';
 import { chunk } from '#root/bot/helpers/keyboard.js';
 import { InlineKeyboard } from 'grammy';
 

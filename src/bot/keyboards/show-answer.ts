@@ -1,5 +1,5 @@
 import type { Context } from '#root/bot/context.js';
-import { showAnswerData } from '#root/bot/callback-data/show-answer.ts';
+import { showAnswerData } from '#root/bot/callback-data/show-answer.js';
 import { InlineKeyboard } from 'grammy';
 
 export function createShowAnswerKeyboard(ctx: Context) {

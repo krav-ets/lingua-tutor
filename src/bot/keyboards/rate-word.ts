@@ -1,5 +1,5 @@
 import type { Context } from '#root/bot/context.js';
-import { rateWordData } from '#root/bot/callback-data/rate-word.ts';
+import { rateWordData } from '#root/bot/callback-data/rate-word.js';
 import { chunk } from '#root/bot/helpers/keyboard.js';
 import { InlineKeyboard } from 'grammy';
 
