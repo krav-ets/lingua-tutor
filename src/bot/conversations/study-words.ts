@@ -7,7 +7,7 @@ import { i18n } from '#root/bot/i18n.js';
 import { createConfirmationKeyboard } from '#root/bot/keyboards/confirmation.ts';
 import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.ts';
 import { userRepository } from '#root/repositories/user.repository.ts';
-import { getNextWordToRepeat, getNextWordToStudy, reviewWord } from '#root/services/word-study.service.ts';
+import { getNextWordToStudy, reviewWord } from '#root/services/word-study.service.ts';
 import { createConversation } from '@grammyjs/conversations';
 
 export const STUDY_WORDS_CONVERSATION = 'study-words';

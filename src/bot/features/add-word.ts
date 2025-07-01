@@ -12,7 +12,6 @@ composer.chatType('private').on('message:text', logHandle('handle-word-input'), 
 
   // Имитация запроса к API
   const results = await translateWithLLM(word, 'en-ru');
-  console.log('====================', { word, results });
   if (!results || !results.length) {
     return ctx.reply(ctx.t('word-not-found'));
   }
@@ -40,7 +39,7 @@ composer.callbackQuery(
   addWordData.filter(),
   logHandle('handle-add-word'),
   async (ctx) => {
-    const { wordId } = addWordData.unpack(ctx.callbackQuery.data);
+    // const { wordId } = addWordData.unpack(ctx.callbackQuery.data);
 
     // TODO: Реализовать добавление в БД
     /* ctx.logger.info(`Adding word: ${word}, index: ${meaningIndex}`);
