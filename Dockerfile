@@ -2,10 +2,11 @@
 FROM node:20-bookworm AS builder
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+COPY package*.json prisma/schema.prisma ./
+RUN npm ci && npx prisma generate
 
 COPY . .
+RUN npx prisma generate
 RUN npm run build
 # ---------- runtime (final) ----------
 FROM node:20-slim
