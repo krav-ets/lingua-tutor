@@ -16,19 +16,19 @@ test:
 
 # Start the database in Docker
 up-db:
-	docker-compose up -d db
+	docker-compose -f docker-compose.dev.yml up -d db
 
 # Start the test database in Docker
 up-test-db:
-	docker-compose up -d test-db
+	docker-compose -f docker-compose.dev.yml up -d test-db
 
 # Stop the database
 down-db:
-	docker-compose down
+	docker-compose -f docker-compose.dev.yml down
 
 # Stop the test database
 down-test-db:
-	docker-compose down -v test-db
+	docker-compose -f docker-compose.dev.yml down -v test-db
 
 # run prisma studio
 studio:
@@ -52,8 +52,8 @@ typecheck:
 
 # Tail the logs for the database
 logs-db:
-	docker-compose logs -f db
+	docker-compose -f docker-compose.dev.yml logs -f db
 
 # Remove the database container and its data
 clean-db:
-	docker-compose down -v
+	docker-compose -f docker-compose.dev.yml down -v

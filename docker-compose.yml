@@ -1,29 +1,43 @@
-version: '3'
+version: "3.9"
 services:
+  app:
+    image: ghcr.io/krav-ets/lingua-tutor:${IMAGE_TAG}
+    env_file: .env
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/health"]
+      interval: 30s
+      retries: 3
+
   db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    ports:
-      - '5432:5432'
+    image: postgres:15
+    restart: unless-stopped
+    env_file: .env
     volumes:
-      - pgdata:/var/lib/postgresql/data
-   
-  test-db:
-      image: postgres
-      restart: always
-      environment:
-        POSTGRES_USER: test_user
-        POSTGRES_PASSWORD: test_password
-        POSTGRES_DB: test_db
-      ports:
-        - '5433:5432'
-      volumes:
-        - test_pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD","pg_isready","-U","lingua_tutor"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
 
 volumes:
-  pgdata:
-  test_pgdata:
+  db_data:
+  caddy_data:
+  caddy_config:
