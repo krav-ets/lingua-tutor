@@ -1,0 +1,17 @@
+http:// {
+  redir https://{host}{uri} permanent
+}
+
+lt.240720.xyz {
+  encode gzip zstd
+
+  log {
+    output file /data/access.log
+    format json
+  }
+
+  reverse_proxy app:80 {
+  }
+
+  tls t@240720.xyz
+}

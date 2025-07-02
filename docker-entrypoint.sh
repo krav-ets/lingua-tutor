@@ -13,4 +13,4 @@ npx prisma migrate deploy
 
 # Запускаем приложение
 echo "✅ Starting app"
-exec node dist/main.js
+exec node build/src/main.js

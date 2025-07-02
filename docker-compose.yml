@@ -1,16 +1,21 @@
 version: '3.9'
 services:
   app:
-    image: ghcr.io/krav-ets/lingua-tutor:${IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/krav-ets/lingua-tutor:${IMAGE_TAG:-latest}
     env_file: .env
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/health']
-      interval: 30s
-      retries: 3
+      test: [CMD, curl, -f, 'http://localhost:3000/api']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   db:
     image: postgres:15
