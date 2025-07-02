@@ -52,5 +52,6 @@
     "pcss",
     "postcss"
   ],
-  "amazonQ.telemetry": false
+  "amazonQ.telemetry": false,
+  "postman.settings.dotenv-detection-notification-visibility": false
 }

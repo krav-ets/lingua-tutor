@@ -1,8 +1,9 @@
-http:// {
+:80 {
   redir https://{host}{uri} permanent
 }
 
-lt.240720.xyz {
+lt.240720.xyz, www.lt.240720.xyz {
+
   encode gzip zstd
 
   log {
@@ -10,8 +11,7 @@ lt.240720.xyz {
     format json
   }
 
-  reverse_proxy app:80 {
-  }
+  reverse_proxy app:80
 
   tls t@240720.xyz
 }
