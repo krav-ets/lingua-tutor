@@ -14,7 +14,7 @@ RUN npm run build
 # ---------- runtime (final) ----------
 FROM node:20-slim
 RUN apt-get update \
- && apt-get install -y postgresql-client \
+ && apt-get install -y postgresql-client curl \
  && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
