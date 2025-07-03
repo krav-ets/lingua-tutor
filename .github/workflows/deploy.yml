@@ -40,7 +40,6 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_KEY }}
           script: |
-            set -e
             cd /opt/lingua-tutor
             export IMAGE_TAG=${{ github.sha }}
             docker compose pull app
