@@ -2,16 +2,30 @@
   redir https://{host}{uri} permanent
 }
 
-lt.240720.xyz, www.lt.240720.xyz {
+{$DOMAIN}:443 {
+
+  # Get a cert by using the ACME HTTP-01 challenge.
+  tls {$EMAIL}
 
   encode gzip zstd
 
   log {
-    output file /data/access.log
-    format json
+    level INFO
+    output file {$LOG_FILE} {
+      roll_size 10MB
+      roll_keep 10
+    }
   }
 
-  reverse_proxy app:80
+  header {
+  # Prevent search engines from indexing
+  X-Robots-Tag "none"
 
-  tls t@240720.xyz
+  # Remove Caddy branding
+  -Server
+  }
+
+  reverse_proxy app:{$SERVER_PORT} {
+       header_up X-Real-IP {remote_host}
+  }
 }

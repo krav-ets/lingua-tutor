@@ -4,14 +4,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ghcr.io/krav-ets/lingua-tutor:${IMAGE_TAG:-latest}
+    image: ${IMAGE_ADDRESS}:${IMAGE_TAG:-latest}
     env_file: .env
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost:3000/api']
+      test: [CMD, curl, -f, 'http://0.0.0.0:3000/api']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,9 +22,9 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - ./data/db_data:/var/lib/postgresql/data
     healthcheck:
-      test: [CMD, pg_isready, -U, lingua_tutor]
+      test: [CMD, pg_isready, -U, "${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,17 +34,13 @@ services:
   caddy:
     image: caddy:2
     restart: unless-stopped
+    env_file: .env
     ports:
-      - '80:80'
-      - '443:443'
+      - 80:80
+      - 443:443
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
+      - ./data/caddy_data:/data
+      - ./data/caddy_config:/config
     depends_on:
       - app
-
-volumes:
-  db_data:
-  caddy_data:
-  caddy_config:
