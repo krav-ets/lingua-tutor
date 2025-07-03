@@ -43,4 +43,4 @@ jobs:
             cd /opt/lingua-tutor
             export IMAGE_TAG=${{ github.sha }}
             docker compose pull app
-            docker compose up -d --pull always --force-recreate app
+            docker compose up -d --pull always --force-recreate
