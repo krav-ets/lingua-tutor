@@ -34,7 +34,11 @@ services:
   caddy:
     image: caddy:2
     restart: unless-stopped
-    env_file: .env
+    environment:
+      DOMAIN: ${DOMAIN}
+      EMAIL: ${EMAIL}
+      LOG_FILE: ${LOG_FILE}
+      SERVER_PORT: ${SERVER_PORT}
     ports:
       - 80:80
       - 443:443
