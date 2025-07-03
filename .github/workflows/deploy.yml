@@ -40,7 +40,13 @@ jobs:
           username: deploy
           key: ${{ secrets.SSH_KEY }}
           script: |
+            set -e
             cd /opt/lingua-tutor
+
+            echo "🔄 Pulling latest repo..."
+            git pull origin main
+
             export IMAGE_TAG=${{ github.sha }}
+            echo "🐳 Updating containers..."
             docker compose pull
             docker compose up -d --pull always --force-recreate
