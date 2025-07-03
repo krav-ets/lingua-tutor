@@ -4,8 +4,6 @@
 
 {$DOMAIN}:443 {
 
-  # Get a cert by using the ACME HTTP-01 challenge.
-  tls {$EMAIL}
 
   encode gzip zstd
 
@@ -24,6 +22,8 @@
   # Remove Caddy branding
   -Server
   }
+
+  tls {$EMAIL}
 
   reverse_proxy app:{$SERVER_PORT} {
        header_up X-Real-IP {remote_host}
