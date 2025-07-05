@@ -38,6 +38,23 @@ studio:
 seed:
 	npx prisma db seed
 
+# Apply all existing migrations to the database
+migrate-deploy:
+	npx prisma migrate deploy
+
+# Create a new migration based on schema changes
+# Usage: make migrate-dev name=<migration-name>
+migrate-dev:
+	npx prisma migrate dev --name $(name) 
+
+# Reset the database and reapply all migrations
+migrate-reset:
+	npx prisma migrate reset --force
+
+# Check the status of migrations
+migrate-status:
+	npx prisma migrate status
+
 # Lint the code to ensure code style consistency
 lint:
 	npm run lint
