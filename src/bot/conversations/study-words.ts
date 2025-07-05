@@ -55,6 +55,7 @@ export function studyWordsConversation() {
 
         await ctx.reply(message, {
           reply_markup: keyboard,
+          parse_mode: 'HTML',
         });
 
         // Ждем ответа пользователя

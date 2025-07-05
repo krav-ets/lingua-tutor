@@ -35,6 +35,7 @@ export function repeatWordsConversation() {
 
         const initialReply = await ctx.reply(initialMessage, {
           reply_markup: showAnswerKeyboard,
+          parse_mode: 'HTML',
         });
 
         // Ждем нажатия кнопки "Показать ответ"
@@ -56,6 +57,7 @@ export function repeatWordsConversation() {
           fullMessage,
           {
             reply_markup: rateKeyboard,
+            parse_mode: 'HTML',
           },
         );
 
@@ -80,6 +82,9 @@ export function repeatWordsConversation() {
           ctx.chat!.id,
           rateResponse.callbackQuery.message!.message_id,
           updatedMessage,
+          {
+            parse_mode: 'HTML',
+          },
         );
 
         await reviewWord({ userId: user.id, wordId: word.id, quality: callbackData.rate });

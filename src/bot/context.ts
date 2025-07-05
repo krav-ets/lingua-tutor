@@ -6,7 +6,6 @@ import type { ConversationFlavor } from '@grammyjs/conversations';
 import type { HydrateFlavor } from '@grammyjs/hydrate';
 import type { I18nFlavor } from '@grammyjs/i18n';
 import type { MenuFlavor } from '@grammyjs/menu';
-import type { ParseModeFlavor } from '@grammyjs/parse-mode';
 import type { Update, UserFromGetMe } from '@grammyjs/types';
 import { type Api, Context as DefaultContext, type SessionFlavor } from 'grammy';
 
@@ -20,7 +19,7 @@ interface ExtendedContextFlavor {
   prisma: PrismaClientX;
 }
 
-export type Context = ParseModeFlavor<
+export type Context =
   HydrateFlavor<
     DefaultContext &
     ExtendedContextFlavor &
@@ -29,8 +28,7 @@ export type Context = ParseModeFlavor<
     ConversationFlavor &
     AutoChatActionFlavor &
     MenuFlavor
-  >
->;
+  >;
 
 interface Dependencies {
   logger: Logger;

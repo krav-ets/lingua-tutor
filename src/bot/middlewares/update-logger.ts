@@ -1,11 +1,11 @@
 import type { Context } from '#root/bot/context.js';
-import type { Middleware } from 'grammy';
+import type { Middleware, RawApi, Transformer } from 'grammy';
 import { performance } from 'node:perf_hooks';
 import { getUpdateInfo } from '#root/bot/helpers/logging.js';
 
 export function updateLogger(): Middleware<Context> {
   return async (ctx, next) => {
-    ctx.api.config.use((previous, method, payload, signal) => {
+    const transformer: Transformer<RawApi> = (previous, method, payload, signal) => {
       ctx.logger.debug({
         msg: 'Bot API call',
         method,
@@ -13,7 +13,8 @@ export function updateLogger(): Middleware<Context> {
       });
 
       return previous(method, payload, signal);
-    });
+    };
+    ctx.api.config.use(transformer);
 
     ctx.logger.debug({
       msg: 'Update received',
