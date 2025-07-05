@@ -52,7 +52,7 @@
     "pino": "^9.4.0",
     "pino-pretty": "^11.2.2",
     "tsx": "^4.19.2",
-    "valibot": "^0.42.1"
+    "valibot": "^1.1.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.12.1",
