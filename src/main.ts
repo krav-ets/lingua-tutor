@@ -1,13 +1,14 @@
 #!/usr/bin/env tsx
 /* eslint-disable antfu/no-top-level-await */
 
+import type { RunnerHandle } from '@grammyjs/runner';
 import process from 'node:process';
 import { createBot } from '#root/bot/index.js';
 import { config } from '#root/config.js';
 import { logger } from '#root/logger.js';
 import { prisma } from '#root/prisma/index.js';
 import { createServer, createServerManager } from '#root/server/index.js';
-import { run, type RunnerHandle } from '@grammyjs/runner';
+import { run } from '@grammyjs/runner';
 
 async function startBot() {
   if (!config.botToken) {

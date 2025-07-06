@@ -1,14 +1,14 @@
 {
   "name": "lingua-tutor",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "",
+  "author": "",
+  "license": "MIT",
   "imports": {
     "#root/*": "./build/src/*"
   },
-  "author": "",
-  "license": "MIT",
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=8.0.0"
