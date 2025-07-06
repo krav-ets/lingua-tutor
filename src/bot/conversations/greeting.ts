@@ -1,15 +1,12 @@
-import type { Context } from '#root/bot/context.js';
+import type { Context, ConversationContext } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
-import { i18n } from '#root/bot/i18n.js';
 import { createConversation } from '@grammyjs/conversations';
 
 export const GREETING_CONVERSATION = 'greeting';
 
 export function greetingConversation() {
   return createConversation(
-    async (conversation: Conversation<Context>, ctx: Context) => {
-      await conversation.run(i18n);
-
+    async (conversation: Conversation<Context, ConversationContext>, ctx: ConversationContext) => {
       await ctx.reply('Please send me your name');
 
       while (true) {
@@ -20,7 +17,7 @@ export function greetingConversation() {
         }
         else if (ctx.has('message:text')) {
           ctx.chatAction = 'typing';
-          await conversation.sleep(1000);
+          // await conversation.sleep(1000);
 
           await ctx.reply(`Hello, ${ctx.message.text}!`);
         }

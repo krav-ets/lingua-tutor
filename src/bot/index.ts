@@ -1,4 +1,4 @@
-import type { Context, SessionData } from '#root/bot/context.js';
+import type { Context, ConversationContext, SessionData } from '#root/bot/context.js';
 import type { Config } from '#root/config.js';
 import type { Logger } from '#root/logger.js';
 import type { PrismaClientX } from '#root/prisma/index.js';
@@ -69,7 +69,9 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
   protectedBot.use(session({ getSessionKey, storage: options.botSessionStorage }));
   protectedBot.use(i18n);
   protectedBot.use(setLocaleMiddleware);
-  protectedBot.use(conversations());
+  protectedBot.use(conversations<Context, ConversationContext>({
+    plugins: [i18n],
+  }));
   protectedBot.use(greetingConversation());
   protectedBot.use(repeatWordsConversation());
   protectedBot.use(studyWordsConversation());

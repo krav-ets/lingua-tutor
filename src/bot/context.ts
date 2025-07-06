@@ -7,7 +7,8 @@ import type { HydrateFlavor } from '@grammyjs/hydrate';
 import type { I18nFlavor } from '@grammyjs/i18n';
 import type { MenuFlavor } from '@grammyjs/menu';
 import type { Update, UserFromGetMe } from '@grammyjs/types';
-import { type Api, Context as DefaultContext, type SessionFlavor } from 'grammy';
+import type { Api, SessionFlavor } from 'grammy';
+import { Context as DefaultContext } from 'grammy';
 
 export interface SessionData {
   // field?: string;
@@ -19,16 +20,16 @@ interface ExtendedContextFlavor {
   prisma: PrismaClientX;
 }
 
-export type Context =
-  HydrateFlavor<
-    DefaultContext &
-    ExtendedContextFlavor &
-    SessionFlavor<SessionData> &
-    I18nFlavor &
-    ConversationFlavor &
-    AutoChatActionFlavor &
-    MenuFlavor
-  >;
+export type BaseContext = DefaultContext
+  & ExtendedContextFlavor
+  & SessionFlavor<SessionData>
+  & I18nFlavor
+  & AutoChatActionFlavor
+  & MenuFlavor;
+
+export type Context = HydrateFlavor<ConversationFlavor<BaseContext>>;
+
+export type ConversationContext = HydrateFlavor<BaseContext>;
 
 interface Dependencies {
   logger: Logger;

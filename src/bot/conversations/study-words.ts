@@ -1,9 +1,8 @@
-import type { Context } from '#root/bot/context.js';
+import type { Context, ConversationContext } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
 import { confirmationData } from '#root/bot/callback-data/confirmation.js';
 import { rateWordData } from '#root/bot/callback-data/rate-word.js';
 import { REPEAT_WORDS_CONVERSATION } from '#root/bot/conversations/index.js';
-import { i18n } from '#root/bot/i18n.js';
 import { createConfirmationKeyboard } from '#root/bot/keyboards/confirmation.js';
 import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.js';
 import { userRepository } from '#root/repositories/user.repository.js';
@@ -13,9 +12,8 @@ import { createConversation } from '@grammyjs/conversations';
 export const STUDY_WORDS_CONVERSATION = 'study-words';
 
 export function studyWordsConversation() {
-  return createConversation(
-    async (conversation: Conversation<Context>, ctx: Context) => {
-      await conversation.run(i18n);
+  return createConversation<Context, ConversationContext>(
+    async (conversation: Conversation<Context, ConversationContext>, ctx: ConversationContext) => {
       const tgUserId = ctx.from?.id;
       const user = await userRepository.findByTelegramId(tgUserId);
       if (!user) {
@@ -34,7 +32,9 @@ export function studyWordsConversation() {
           const response = await conversation.waitFor('callback_query:data');
           const { isConfirmed } = confirmationData.unpack(response.callbackQuery.data);
           if (isConfirmed) {
-            await response.conversation.enter(REPEAT_WORDS_CONVERSATION);
+            await conversation.external(outsideCtx =>
+              outsideCtx.conversation.enter(REPEAT_WORDS_CONVERSATION),
+            );
           }
           else {
             await ctx.reply(ctx.t('study-finished'));

@@ -1,8 +1,7 @@
-import type { Context } from '#root/bot/context.js';
+import type { Context, ConversationContext } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
 import { rateWordData } from '#root/bot/callback-data/rate-word.js';
 import { showAnswerData } from '#root/bot/callback-data/show-answer.js';
-import { i18n } from '#root/bot/i18n.js';
 import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.js';
 import { createShowAnswerKeyboard } from '#root/bot/keyboards/show-answer.js';
 import { userRepository } from '#root/repositories/user.repository.js';
@@ -13,8 +12,7 @@ export const REPEAT_WORDS_CONVERSATION = 'repeat-words';
 
 export function repeatWordsConversation() {
   return createConversation(
-    async (conversation: Conversation<Context>, ctx: Context) => {
-      await conversation.run(i18n);
+    async (conversation: Conversation<Context, ConversationContext>, ctx: ConversationContext) => {
       const tgUserId = ctx.from?.id;
       const user = await userRepository.findByTelegramId(tgUserId);
       if (!user) {
