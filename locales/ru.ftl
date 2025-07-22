@@ -59,3 +59,8 @@ rate-word-4 = 4
 rate-word-5 = 5
 
 show-answer = Показать ответ
+
+## add word
+word-not-found = Слово не найдено
+start-learning = Начать учить
+word-added = Слово "{ $word }" добавлено

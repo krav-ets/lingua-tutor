@@ -61,3 +61,8 @@ rate-word-4 = 4
 rate-word-5 = 5
 
 show-answer = Show answer
+
+## add word
+word-not-found = Word not found
+start-learning = Start learning
+word-added = Word "
