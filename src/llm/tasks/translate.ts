@@ -5,7 +5,6 @@ import { toJsonSchema } from '@valibot/to-json-schema';
 import { array, maxLength, minLength, object, optional, pipe, string } from 'valibot';
 import { callLLMWithTool } from '../call.js';
 
-// Схемы valibot - наш "источник правды"
 const ExampleSchema = object({
   original: string(),
   translation: string(),
@@ -17,7 +16,7 @@ const TranslationSchema = object({
   pos: optional(string()),
   transcription: string(),
   def: string(),
-  examples: pipe(array(ExampleSchema), minLength(2)),
+  examples: pipe(array(ExampleSchema), minLength(3)),
 });
 
 const ResponseSchema = object({
