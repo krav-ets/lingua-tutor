@@ -11,7 +11,7 @@ import type { Api, SessionFlavor } from 'grammy';
 import { Context as DefaultContext } from 'grammy';
 
 export interface SessionData {
-  // field?: string;
+  words?: Record<string, any>; // Store translation results by ID
 }
 
 interface ExtendedContextFlavor {
