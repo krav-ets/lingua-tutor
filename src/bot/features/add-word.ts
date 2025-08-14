@@ -21,7 +21,17 @@ composer.chatType('private').on('message:text', logHandle('handle-word-input'), 
 
   try {
     // Use the proper translate function from the LLM module
-    const { data: results, usage } = await translate(word, 'en-ru');
+    let results: any;
+    let usage: any;
+    try {
+      ctx.chatAction = 'typing';
+      const translation = await translate(word, 'en-ru');
+      results = translation.data;
+      usage = translation.usage;
+    }
+    finally {
+      ctx.chatAction = null;
+    }
     if (!results || results.length === 0) {
       return ctx.reply(ctx.t('word-not-found'));
     }
