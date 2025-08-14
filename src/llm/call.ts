@@ -24,7 +24,7 @@ export async function callLLMWithTool<T extends GenericSchema>({
   toolName,
   jsonSchema,
   model = config.llmModel ?? 'gpt-4.1-nano',
-  temperature = 0.2,
+  temperature = config.llmTemperature ?? 0.2,
 }: CallWithToolOptions<T>): Promise<{ data: InferOutput<T>; usage: CompletionUsage | undefined }> {
   const { system, user } = await renderPrompt(promptName, promptVars);
 

@@ -9,6 +9,7 @@ const baseConfigSchema = v.object({
   llmApiKey: v.optional(v.string()),
   llmApiUrl: v.optional(v.string()),
   llmModel: v.optional(v.string()),
+  llmTemperature: v.optional(v.pipe(v.string(), v.transform(Number), v.number())),
   botAllowedUpdates: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.array(v.picklist(API_CONSTANTS.ALL_UPDATE_TYPES))), '[]'),
   botAdmins: v.optional(v.pipe(v.string(), v.transform(JSON.parse), v.array(v.number())), '[]'),
   serverHost: v.optional(v.string(), '0.0.0.0'),
