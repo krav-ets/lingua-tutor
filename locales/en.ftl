@@ -13,6 +13,7 @@ welcome = Welcome!
 done = Done
 save = Save
 finish = Finish
+cancel = Cancel
 
 ## Language Feature
 

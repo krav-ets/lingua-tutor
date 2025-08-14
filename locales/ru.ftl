@@ -14,6 +14,7 @@ welcome = Добро пожаловать!
 done = Готово
 save = Сохранить
 finish = Завершить
+cancel = Отмена
 
 ## Language Feature
 language-select = Пожалуйста, выберите ваш язык
