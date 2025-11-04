@@ -6,15 +6,13 @@ language-command-description = Изменить язык интерфейса
 setcommands-command-description = Обновить команды бота
 study-words-command-description = Изучать слова
 
-## Welcome Feature
-
-welcome = Добро пожаловать!
-
 ## Common
 done = Готово
 save = Сохранить
+start = Начать
 finish = Завершить
 cancel = Отмена
+next = Далее
 
 ## Language Feature
 language-select = Пожалуйста, выберите ваш язык
@@ -26,8 +24,15 @@ admin-commands-updated = Команды обновлены.
 ## Unhandled Feature
 unhandled = Неизвестная команда. Попробуйте /start
 
-## settings
+## Welcome Feature
+welcome = Добро пожаловать!
+welcome-message1 = Этот бот поможет вам изучать и закреплять иностранные слова с помощью метода интервальных повторений.
+welcome-message2 = Вы можете добавлять свои слова и выражения или использовать готовые подборки.
 
+## onboarding
+onboarding-start = Давайте настроим бота для начала обучения!
+onboarding-finished = Настройка завершена. Теперь можно приступать к обучению! 🚀
+## settings
 main-settings = Пользовательские настройки
 settings-native = Знаю язык
 settings-learning = Изучаемый язык

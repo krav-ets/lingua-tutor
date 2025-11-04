@@ -5,15 +5,14 @@ settings-command-description = User settings
 language-command-description = Change language
 setcommands-command-description = Set bot commands
 study-words-command-description = Study words
-## Welcome Feature
-
-welcome = Welcome!
 
 ## Common
 done = Done
 save = Save
+start = Start
 finish = Finish
 cancel = Cancel
+next = Next
 
 ## Language Feature
 
@@ -27,6 +26,14 @@ admin-commands-updated = Commands updated.
 ## Unhandled Feature
 
 unhandled = Unrecognized command. Try /start
+
+## Welcome Feature
+welcome = Welcome!
+welcome-message1 = This bot helps you learn and practice foreign words using the spaced repetition method.
+welcome-message2 = You can add your own words and phrases or use ready-made collections.
+## onboarding
+onboarding-start = Let’s set up your learning journey!
+onboarding-finished = Setup completed. You can now start learning! 🚀
 
 ## settings
 
