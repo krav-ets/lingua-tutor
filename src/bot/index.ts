@@ -15,6 +15,7 @@ import { unhandledFeature } from '#root/bot/features/unhandled.js';
 import { welcomeFeature } from '#root/bot/features/welcome.js';
 import { errorHandler } from '#root/bot/handlers/error.js';
 import { i18n, isMultipleLocales } from '#root/bot/i18n.js';
+import { onboardingMenu } from '#root/bot/menus/onboarding.js';
 import { settingsMenu } from '#root/bot/menus/settings.js';
 import { session } from '#root/bot/middlewares/session.js';
 import { setLocaleMiddleware } from '#root/bot/middlewares/setLocale.js';
@@ -78,6 +79,7 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
 
   // Menus
   protectedBot.use(settingsMenu);
+  protectedBot.use(onboardingMenu);
 
   // Handlers
   protectedBot.use(welcomeFeature);
