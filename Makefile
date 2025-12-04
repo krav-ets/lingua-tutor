@@ -38,6 +38,10 @@ studio:
 seed:
 	npx prisma db seed
 
+# Start the background worker
+worker-start:
+	npm run worker:start
+
 # Apply all existing migrations to the database
 migrate-deploy:
 	npx prisma migrate deploy
