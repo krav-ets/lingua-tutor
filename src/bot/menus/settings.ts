@@ -3,6 +3,7 @@ import { i18n } from '#root/bot/i18n.js';
 import { languageRepository } from '#root/repositories/language.repository.js';
 import { userRepository } from '#root/repositories/user.repository.js';
 import { wordCollectionRepository } from '#root/repositories/word-collection.repository.js';
+import { disableRemindersForUser, enableRemindersForUser, isRemindersEnabled } from '#root/services/reminder.service.js';
 import { addCollectionToUser, removeCollectionFromUser } from '#root/services/user.service.js';
 import { Menu } from '@grammyjs/menu';
 import ISO6391 from 'iso-639-1';
@@ -177,6 +178,27 @@ async function dailyButton(ctx: Context) {
   const user = await userRepository.findByTelegramId(ctx.from?.id);
   return `${ctx.t('settings-daily')} [${user?.wordsPerDay || '--'}]`;
 };
+// label with checkbox
+async function remindersButton(ctx: Context) {
+  const user = await userRepository.findByTelegramId(ctx.from?.id);
+  const enabled = user ? await isRemindersEnabled(user.id) : false;
+  return `${ctx.t('settings-reminders')} ${enabled ? '✅' : '⬜'}`;
+};
+async function toggleReminders(ctx: Context) {
+  const user = await userRepository.findByTelegramId(ctx.from?.id);
+  if (!user)
+    return;
+  const enabled = await isRemindersEnabled(user.id);
+  if (enabled) {
+    await disableRemindersForUser(user.id);
+    await ctx.reply(ctx.t('reminder-disabled'));
+  }
+  else {
+    await enableRemindersForUser(user.id);
+    await ctx.reply(ctx.t('reminder-enabled'));
+  }
+  await ctx.menu.update();
+};
 function doneButton(ctx: Context) {
   return ctx.t('done');
 };
@@ -217,6 +239,8 @@ export const settingsMenu = new Menu<Context>('settings-menu')
   .text(categoriesButton, moveToCategories)
   .row()
   .text(dailyButton, moveToDailyWords)
+  .row()
+  .text(remindersButton, toggleReminders)
   .row()
   .text(doneButton, closeSettings);
 
