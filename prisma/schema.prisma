@@ -114,8 +114,10 @@ model WordProgress {
 model Reminder {
   id        Int      @id @default(autoincrement())
   userId    Int
-  time      DateTime
-  isActive  Boolean  @default(true)
+  time      DateTime // next run at UTC
+  timeLocal String? // "HH:mm", e.g., "13:00"
+  timeZone  String? // IANA, e.g., "UTC"
+  isActive  Boolean  @default(false)
   //
   user      User     @relation(fields: [userId], references: [id])
   //
