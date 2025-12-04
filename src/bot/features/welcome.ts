@@ -2,7 +2,7 @@ import type { Context } from '#root/bot/context.js';
 import { GREETING_CONVERSATION } from '#root/bot/conversations/index.js';
 import { logHandle } from '#root/bot/helpers/logging.js';
 import { onboardingMenu } from '#root/bot/menus/onboarding.js';
-import { b, fmt, i } from '@grammyjs/parse-mode';
+import { fmt } from '@grammyjs/parse-mode';
 import { Composer } from 'grammy';
 
 const composer = new Composer<Context>();
