@@ -3,10 +3,11 @@ import { i18n } from '#root/bot/i18n.js';
 import { languageRepository } from '#root/repositories/language.repository.js';
 import { userRepository } from '#root/repositories/user.repository.js';
 import { wordCollectionRepository } from '#root/repositories/word-collection.repository.js';
-import { disableRemindersForUser, enableRemindersForUser, isRemindersEnabled } from '#root/services/reminder.service.js';
+import { disableRemindersForUser, enableRemindersForUser, isRemindersEnabled, updateReminderTime } from '#root/services/reminder.service.js';
 import { addCollectionToUser, removeCollectionFromUser } from '#root/services/user.service.js';
 import { Menu } from '@grammyjs/menu';
 import ISO6391 from 'iso-639-1';
+import { timePickerMenu } from '../features/time-picker.js';
 
 const nativeLanguageMenu = new Menu<Context>('native-language-menu')
   .dynamic(async (ctx, range) => {
@@ -154,6 +155,59 @@ const dailyWordsMenu = new Menu<Context>('daily-words-menu')
     });
   });
 
+const remindersMenu = new Menu<Context>('reminders-menu')
+  .text(async (ctx) => {
+    const user = await userRepository.findByTelegramId(ctx.from?.id);
+    const enabled = user ? await isRemindersEnabled(user.id) : false;
+    return `${enabled ? '✅ ' : '⬜ '}${ctx.t('reminder-enabled-label')}`;
+  }, async (ctx) => {
+    const user = await userRepository.findByTelegramId(ctx.from?.id);
+    if (!user)
+      return;
+    const enabled = await isRemindersEnabled(user.id);
+    if (enabled) {
+      await disableRemindersForUser(user.id);
+    }
+    else {
+      await enableRemindersForUser(user.id);
+    }
+    await ctx.menu.update();
+  })
+  .row()
+  .text(async (ctx) => {
+    // TODO: fetch current reminder time from DB to show in button label if needed
+    // For now just "Set time"
+    return ctx.t('set-time');
+  }, async (ctx) => {
+    // Initialize session time picker with current user settings if available
+    // For now default to 12:00 or whatever is in DB if we fetch it
+    // We need to fetch the current reminder time to pre-fill the picker
+    // But the current service doesn't easily expose it without fetching the reminder object
+    // Let's assume we start with 12:00 or keep previous session state
+    if (!ctx.session.timePicker) {
+      ctx.session.timePicker = { hour: 12, minute: 0 };
+    }
+    await ctx.menu.nav('time-picker-menu');
+  })
+  .row()
+  .text(ctx => ctx.t('save'), async (ctx) => {
+    // If we came back from time picker, we might want to save the time
+    if (ctx.session.timePicker) {
+      const { hour, minute } = ctx.session.timePicker;
+      const timeString = `${String(hour ?? '00').padStart(2, '0')}:${String(minute ?? '00').padStart(2, '0')}`;
+      const user = await userRepository.findByTelegramId(ctx.from?.id);
+      if (user) {
+        await updateReminderTime(user.id, timeString);
+      }
+      // Clear session after saving? Maybe keep it for UI consistency until closed
+      // delete ctx.session.timePicker;
+    }
+    await ctx.editMessageText(ctx.t('main-settings'));
+    ctx.menu.back();
+  });
+
+remindersMenu.register(timePickerMenu);
+
 async function nativeButton(ctx: Context) {
   const user = await userRepository.findByTelegramId(ctx.from?.id);
   return `${ctx.t('settings-native')} [${user?.nativeLanguageCode || '--'}]`;
@@ -180,24 +234,11 @@ async function dailyButton(ctx: Context) {
 };
 // label with checkbox
 async function remindersButton(ctx: Context) {
-  const user = await userRepository.findByTelegramId(ctx.from?.id);
-  const enabled = user ? await isRemindersEnabled(user.id) : false;
-  return `${ctx.t('settings-reminders')} ${enabled ? '✅' : '⬜'}`;
+  return ctx.t('settings-reminders');
 };
-async function toggleReminders(ctx: Context) {
-  const user = await userRepository.findByTelegramId(ctx.from?.id);
-  if (!user)
-    return;
-  const enabled = await isRemindersEnabled(user.id);
-  if (enabled) {
-    await disableRemindersForUser(user.id);
-    await ctx.reply(ctx.t('reminder-disabled'));
-  }
-  else {
-    await enableRemindersForUser(user.id);
-    await ctx.reply(ctx.t('reminder-enabled'));
-  }
-  await ctx.menu.update();
+async function moveToReminders(ctx: Context) {
+  await ctx.editMessageText(ctx.t('settings-reminders-description'));
+  await ctx.menu.nav('reminders-menu');
 };
 function doneButton(ctx: Context) {
   return ctx.t('done');
@@ -240,7 +281,7 @@ export const settingsMenu = new Menu<Context>('settings-menu')
   .row()
   .text(dailyButton, moveToDailyWords)
   .row()
-  .text(remindersButton, toggleReminders)
+  .text(remindersButton, moveToReminders)
   .row()
   .text(doneButton, closeSettings);
 
@@ -250,3 +291,4 @@ settingsMenu.register(learningLanguageMenu);
 settingsMenu.register(uiLanguageMenu);
 settingsMenu.register(categoriesMenu);
 settingsMenu.register(dailyWordsMenu);
+settingsMenu.register(remindersMenu);

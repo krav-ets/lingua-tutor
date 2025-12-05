@@ -101,6 +101,17 @@ export async function disableRemindersForUser(userId: number) {
   }
 }
 
+export async function updateReminderTime(userId: number, timeLocal: string) {
+  const reminder = await reminderRepository.upsertDefault(userId, {
+    timeLocal,
+    timeZone: DEFAULT_TIME_ZONE,
+  });
+
+  if (reminder.isActive) {
+    await scheduleNext(reminder.id);
+  }
+}
+
 export async function isRemindersEnabled(userId: number): Promise<boolean> {
   const reminder = await reminderRepository.findByUserId(userId);
   return Boolean(reminder?.isActive);

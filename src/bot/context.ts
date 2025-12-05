@@ -12,6 +12,10 @@ import { Context as DefaultContext } from 'grammy';
 
 export interface SessionData {
   words?: Record<string, any>; // Store translation results by ID
+  timePicker?: {
+    hour?: number;
+    minute?: number;
+  };
 }
 
 interface ExtendedContextFlavor {
