@@ -102,10 +102,19 @@ export async function disableRemindersForUser(userId: number) {
 }
 
 export async function updateReminderTime(userId: number, timeLocal: string) {
-  const reminder = await reminderRepository.upsertDefault(userId, {
-    timeLocal,
-    timeZone: DEFAULT_TIME_ZONE,
-  });
+  let reminder = await reminderRepository.findByUserId(userId);
+
+  if (reminder) {
+    // Update timeLocal for existing reminder
+    reminder = await reminderRepository.update(reminder.id, { timeLocal });
+  }
+  else {
+    // Create new reminder with the specified time
+    reminder = await reminderRepository.upsertDefault(userId, {
+      timeLocal,
+      timeZone: DEFAULT_TIME_ZONE,
+    });
+  }
 
   if (reminder.isActive) {
     await scheduleNext(reminder.id);
@@ -115,6 +124,19 @@ export async function updateReminderTime(userId: number, timeLocal: string) {
 export async function isRemindersEnabled(userId: number): Promise<boolean> {
   const reminder = await reminderRepository.findByUserId(userId);
   return Boolean(reminder?.isActive);
+}
+
+/**
+ * Sync all active reminders with the worker.
+ * This should be called when the worker starts to ensure
+ * all reminders are scheduled with the correct times from the database.
+ */
+export async function syncAllReminders(): Promise<void> {
+  const activeReminders = await reminderRepository.findAllActive();
+
+  for (const reminder of activeReminders) {
+    await scheduleNext(reminder.id);
+  }
 }
 
 interface ReminderWithSchedule extends Reminder {

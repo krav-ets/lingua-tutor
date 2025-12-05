@@ -33,6 +33,10 @@ class ReminderRepository {
     return prisma.reminder.update({ where: { id }, data: { isActive: false } });
   }
 
+  findAllActive() {
+    return prisma.reminder.findMany({ where: { isActive: true } });
+  }
+
   setNextRunAt(id: number, nextRunAtUtc: Date) {
     return prisma.reminder.update({ where: { id }, data: { time: nextRunAtUtc } });
   }

@@ -1,5 +1,6 @@
 import process from 'node:process';
 
+import { syncAllReminders } from '#root/services/reminder.service.js';
 import { sendReminder } from '#root/worker/tasks/send-reminder.js';
 import { run } from 'graphile-worker';
 
@@ -17,6 +18,9 @@ async function main() {
       send_reminder: sendReminder,
     },
   });
+
+  // Sync all active reminders with the worker on startup
+  await syncAllReminders();
 
   const stop = async () => {
     await runner?.stop();
