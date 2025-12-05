@@ -43,7 +43,7 @@ settings-learning = Learning language
 settings-ui = Interface language
 settings-categories = Categories
 settings-daily = Daily goal
-settings-reminders = Enable reminders
+settings-reminders = Reminders
 
 settings-native-description = Select your native language
 settings-learning-description = Select learning language
@@ -52,6 +52,13 @@ settings-categories-description = Select categories of words to study
 settings-daily-description = Select the number of new words per day
 reminder-enabled = Reminders are ON.
 reminder-disabled = Reminders are OFF.
+settings-reminders-description = Configure reminders settings
+reminder-enabled-label = Reminders enabled
+set-time = Set time
+current-time = Current time
+select-hour = Select hour
+select-minute = Select minute
+back = Back
 settings-done-description = Settings updated successfully
 
 ## confirmation keyboard

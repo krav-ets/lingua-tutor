@@ -39,7 +39,7 @@ settings-learning = Изучаемый язык
 settings-ui = Язык интерфейса
 settings-categories = Категории
 settings-daily = Слов в день
-settings-reminders = Включить напоминания
+settings-reminders = Напоминания
 
 settings-native-description = Выберите свой родной язык
 settings-learning-description = Выберите язык обучения
@@ -48,6 +48,13 @@ settings-categories-description = Выберите подборки слов д�
 settings-daily-description = Выберите количество новых слов в день
 reminder-enabled = Напоминания включены.
 reminder-disabled = Напоминания выключены.
+settings-reminders-description = Настройка напоминаний
+reminder-enabled-label = Напоминания включены
+set-time = Задать время
+current-time = Текущее время
+select-hour = Выбрать час
+select-minute = Выбрать минуты
+back = Назад
 settings-done-description = Настройки успешно изменены
 
 ## confirmation keyboard
