@@ -5,6 +5,7 @@ settings-command-description = Пользовательские настройк
 language-command-description = Изменить язык интерфейса
 setcommands-command-description = Обновить команды бота
 study-words-command-description = Изучать слова
+learn-words-command-description = Учить слова
 
 ## Common
 done = Готово

@@ -1,9 +1,7 @@
 import type { Context, ConversationContext } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
-import { confirmationData } from '#root/bot/callback-data/confirmation.js';
 import { rateWordData } from '#root/bot/callback-data/rate-word.js';
 import { showAnswerData } from '#root/bot/callback-data/show-answer.js';
-import { createConfirmationKeyboard } from '#root/bot/keyboards/confirmation.js';
 import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.js';
 import { createShowAnswerKeyboard } from '#root/bot/keyboards/show-answer.js';
 import { userRepository } from '#root/repositories/user.repository.js';
@@ -12,9 +10,9 @@ import { createConversation } from '@grammyjs/conversations';
 
 export type WordsConversationMode = 'study' | 'repeat';
 
-export const WORDS_CONVERSATION = 'words';
+export const LEARN_WORDS_CONVERSATION = 'learn-words';
 
-export function wordsConversation() {
+export function learnWordsConversation() {
   return createConversation<Context, ConversationContext>(
     async (conversation: Conversation<Context, ConversationContext>, ctx: ConversationContext) => {
       const tgUserId = ctx.from?.id;
@@ -23,10 +21,8 @@ export function wordsConversation() {
         return ctx.reply('User not found');
       }
 
-      // Получаем режим из сессии через external (session недоступна напрямую в ConversationContext)
-      let mode: WordsConversationMode = await conversation.external(
-        outsideCtx => outsideCtx.session.wordsMode ?? 'study',
-      );
+      // Начинаем с изучения новых слов, потом автоматически переходим к повторению
+      let mode: WordsConversationMode = 'study';
 
       while (true) {
         const word = await getNextWord(user.id, mode);
@@ -34,37 +30,15 @@ export function wordsConversation() {
         // Если слов больше нет
         if (word === null) {
           if (mode === 'study') {
-            // Предлагаем перейти к повторению
-            const confirmationKeyboard = await createConfirmationKeyboard(ctx);
-            await ctx.reply(ctx.t('no-more-new-words'), {
-              reply_markup: confirmationKeyboard,
-            });
-            const response = await conversation.waitFor('callback_query:data');
-            const { isConfirmed } = confirmationData.unpack(response.callbackQuery.data);
-
-            await ctx.api.editMessageReplyMarkup(
-              ctx.chat!.id,
-              response.callbackQuery.message!.message_id,
-              { reply_markup: undefined },
-            );
-
-            if (isConfirmed) {
-              // Переключаем режим на repeat и продолжаем цикл
-              mode = 'repeat';
-              await conversation.external((outsideCtx) => {
-                outsideCtx.session.wordsMode = 'repeat';
-              });
-              continue;
-            }
-            else {
-              await ctx.reply(ctx.t('study-finished'));
-            }
+            // Автоматически переключаемся на повторение
+            mode = 'repeat';
+            continue;
           }
           else {
-            // mode === 'repeat'
+            // mode === 'repeat' - все слова закончились
             await ctx.reply(ctx.t('study-finished'));
+            return;
           }
-          return;
         }
 
         // Шаг 1: Показываем слово и кнопку "Показать ответ"
@@ -127,6 +101,6 @@ export function wordsConversation() {
         await reviewWord({ userId: user.id, wordId: word.id, quality: callbackData.rate });
       }
     },
-    WORDS_CONVERSATION,
+    LEARN_WORDS_CONVERSATION,
   );
 }

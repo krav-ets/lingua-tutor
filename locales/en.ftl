@@ -5,6 +5,7 @@ settings-command-description = User settings
 language-command-description = Change language
 setcommands-command-description = Set bot commands
 study-words-command-description = Study words
+learn-words-command-description = Learn words
 
 ## Common
 done = Done

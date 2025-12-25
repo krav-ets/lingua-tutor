@@ -4,13 +4,12 @@ import type { Logger } from '#root/logger.js';
 import type { PrismaClientX } from '#root/prisma/index.js';
 import type { BotConfig, StorageAdapter } from 'grammy';
 import { createContextConstructor } from '#root/bot/context.js';
-import { greetingConversation, wordsConversation } from '#root/bot/conversations/index.js';
+import { greetingConversation, learnWordsConversation } from '#root/bot/conversations/index.js';
 import { addWordFeature } from '#root/bot/features/add-word.js';
 import { adminFeature } from '#root/bot/features/admin.js';
 import { languageFeature } from '#root/bot/features/language.js';
-import { repeatWordsFeature } from '#root/bot/features/repeat-words.js';
+import { learnWordsFeature } from '#root/bot/features/learn-words.js';
 import { settingsFeature } from '#root/bot/features/settings.js';
-import { studyWordsFeature } from '#root/bot/features/study-words.js';
 import { unhandledFeature } from '#root/bot/features/unhandled.js';
 import { welcomeFeature } from '#root/bot/features/welcome.js';
 import { errorHandler } from '#root/bot/handlers/error.js';
@@ -74,7 +73,7 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
     plugins: [i18n],
   }));
   protectedBot.use(greetingConversation());
-  protectedBot.use(wordsConversation());
+  protectedBot.use(learnWordsConversation());
 
   // Menus
   protectedBot.use(settingsMenu);
@@ -84,8 +83,7 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
   protectedBot.use(welcomeFeature);
   protectedBot.use(settingsFeature);
   protectedBot.use(adminFeature);
-  protectedBot.use(studyWordsFeature);
-  protectedBot.use(repeatWordsFeature);
+  protectedBot.use(learnWordsFeature);
   protectedBot.use(addWordFeature);
   if (isMultipleLocales)
     protectedBot.use(languageFeature);
@@ -97,3 +95,4 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
 }
 
 export type Bot = ReturnType<typeof createBot>;
+
