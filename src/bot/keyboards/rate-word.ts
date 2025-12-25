@@ -3,7 +3,7 @@ import { rateWordData } from '#root/bot/callback-data/rate-word.js';
 import { chunk } from '#root/bot/helpers/keyboard.js';
 import { InlineKeyboard } from 'grammy';
 
-export async function createRateWordKeyboard(ctx: Context | ConversationContext) {
+export async function createRateWordKeyboard(ctx: Context | ConversationContext, wordId: number) {
   const rates = [
     { title: 'rate-word-0', value: 0 },
     { title: 'rate-word-1', value: 1 },
@@ -17,6 +17,7 @@ export async function createRateWordKeyboard(ctx: Context | ConversationContext)
     rates.map(({ title, value }) => ({
       text: ctx.t(title),
       callback_data: rateWordData.pack({
+        wordId,
         rate: value,
         isFinish: false,
       }),
@@ -27,6 +28,7 @@ export async function createRateWordKeyboard(ctx: Context | ConversationContext)
   const finishButton = [{
     text: ctx.t('finish'),
     callback_data: rateWordData.pack({
+      wordId,
       rate: 999,
       isFinish: true,
     }),

@@ -2,9 +2,9 @@ import type { Context, ConversationContext } from '#root/bot/context.js';
 import { showAnswerData } from '#root/bot/callback-data/show-answer.js';
 import { InlineKeyboard } from 'grammy';
 
-export function createShowAnswerKeyboard(ctx: Context | ConversationContext) {
+export function createShowAnswerKeyboard(ctx: Context | ConversationContext, wordId: number) {
   return InlineKeyboard.from([[{
     text: ctx.t('show-answer'),
-    callback_data: showAnswerData.pack({}),
+    callback_data: showAnswerData.pack({ wordId }),
   }]]);
 }
