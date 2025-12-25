@@ -40,15 +40,15 @@ export function getNextRunAtUtc(
 
   const runTz = todayCandidate.getTime() <= nowTz.getTime()
     ? new TZDate(
-      nowTz.getFullYear(),
-      nowTz.getMonth(),
-      nowTz.getDate() + 1,
-      h,
-      m,
-      0,
-      0,
-      tz,
-    )
+        nowTz.getFullYear(),
+        nowTz.getMonth(),
+        nowTz.getDate() + 1,
+        h,
+        m,
+        0,
+        0,
+        tz,
+      )
     : todayCandidate;
 
   return new Date(runTz.getTime());

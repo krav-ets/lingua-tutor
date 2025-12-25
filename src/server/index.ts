@@ -1,6 +1,7 @@
 import type { Bot } from '#root/bot/index.js';
 import type { Config } from '#root/config.js';
 import type { Logger } from '#root/logger.js';
+import type { FastifyError } from 'fastify';
 import path, { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import AutoLoad from '@fastify/autoload';
@@ -57,7 +58,7 @@ export function createServer(dependencies: Dependencies) {
   });
 
   // error handling
-  server.setErrorHandler((error, request, reply) => {
+  server.setErrorHandler((error: FastifyError, request, reply) => {
     const reqLogger = request.log;
     if (error.statusCode && error.statusCode < 500) {
       reqLogger.info(error);

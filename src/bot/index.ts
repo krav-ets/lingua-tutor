@@ -95,4 +95,3 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
 }
 
 export type Bot = ReturnType<typeof createBot>;
-
