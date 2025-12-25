@@ -52,6 +52,7 @@ export function learnWordsConversation() {
 
         // Ждем нажатия кнопки "Показать ответ"
         const showAnswerResponse = await conversation.waitFor('callback_query:data');
+        await showAnswerResponse.answerCallbackQuery();
         if (!showAnswerData.unpack(showAnswerResponse.callbackQuery.data)) {
           continue;
         }
@@ -74,6 +75,7 @@ export function learnWordsConversation() {
 
         // Ждем ответа пользователя с оценкой
         const rateResponse = await conversation.waitFor('callback_query:data');
+        await rateResponse.answerCallbackQuery();
         const callbackData = rateWordData.unpack(rateResponse.callbackQuery.data);
 
         // Если пользователь нажал "Завершить"
