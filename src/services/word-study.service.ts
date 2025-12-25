@@ -31,6 +31,12 @@ export async function getNextWordToRepeat(userId: number): Promise<Word | null> 
   return wordProgressRepository.findWordToRepeat(userId);
 }
 
+export async function getNextWord(userId: number, mode: 'study' | 'repeat'): Promise<Word | null> {
+  return mode === 'study'
+    ? getNextWordToStudy(userId)
+    : getNextWordToRepeat(userId);
+}
+
 export async function reviewWord({ userId, wordId, quality }: ReviewWordParams): Promise<WordProgress> {
   const progress = await wordProgressRepository.findByUserAndWord(userId, wordId);
 

@@ -1,17 +1,21 @@
 import type { Context, ConversationContext } from '#root/bot/context.js';
 import type { Conversation } from '@grammyjs/conversations';
+import { confirmationData } from '#root/bot/callback-data/confirmation.js';
 import { rateWordData } from '#root/bot/callback-data/rate-word.js';
 import { showAnswerData } from '#root/bot/callback-data/show-answer.js';
+import { createConfirmationKeyboard } from '#root/bot/keyboards/confirmation.js';
 import { createRateWordKeyboard } from '#root/bot/keyboards/rate-word.js';
 import { createShowAnswerKeyboard } from '#root/bot/keyboards/show-answer.js';
 import { userRepository } from '#root/repositories/user.repository.js';
-import { getNextWordToRepeat, reviewWord } from '#root/services/word-study.service.js';
+import { getNextWord, reviewWord } from '#root/services/word-study.service.js';
 import { createConversation } from '@grammyjs/conversations';
 
-export const REPEAT_WORDS_CONVERSATION = 'repeat-words';
+export type WordsConversationMode = 'study' | 'repeat';
 
-export function repeatWordsConversation() {
-  return createConversation(
+export const WORDS_CONVERSATION = 'words';
+
+export function wordsConversation() {
+  return createConversation<Context, ConversationContext>(
     async (conversation: Conversation<Context, ConversationContext>, ctx: ConversationContext) => {
       const tgUserId = ctx.from?.id;
       const user = await userRepository.findByTelegramId(tgUserId);
@@ -19,15 +23,51 @@ export function repeatWordsConversation() {
         return ctx.reply('User not found');
       }
 
-      while (true) {
-        const word = await getNextWordToRepeat(user?.id);
+      // Получаем режим из сессии через external (session недоступна напрямую в ConversationContext)
+      let mode: WordsConversationMode = await conversation.external(
+        outsideCtx => outsideCtx.session.wordsMode ?? 'study',
+      );
 
-        // Если слов больше нет - завершаем
+      while (true) {
+        const word = await getNextWord(user.id, mode);
+
+        // Если слов больше нет
         if (word === null) {
-          return await ctx.reply(ctx.t('study-finished'));
+          if (mode === 'study') {
+            // Предлагаем перейти к повторению
+            const confirmationKeyboard = await createConfirmationKeyboard(ctx);
+            await ctx.reply(ctx.t('no-more-new-words'), {
+              reply_markup: confirmationKeyboard,
+            });
+            const response = await conversation.waitFor('callback_query:data');
+            const { isConfirmed } = confirmationData.unpack(response.callbackQuery.data);
+
+            await ctx.api.editMessageReplyMarkup(
+              ctx.chat!.id,
+              response.callbackQuery.message!.message_id,
+              { reply_markup: undefined },
+            );
+
+            if (isConfirmed) {
+              // Переключаем режим на repeat и продолжаем цикл
+              mode = 'repeat';
+              await conversation.external((outsideCtx) => {
+                outsideCtx.session.wordsMode = 'repeat';
+              });
+              continue;
+            }
+            else {
+              await ctx.reply(ctx.t('study-finished'));
+            }
+          }
+          else {
+            // mode === 'repeat'
+            await ctx.reply(ctx.t('study-finished'));
+          }
+          return;
         }
 
-        // Сначала показываем только слово и транскрипцию с кнопкой "Показать ответ"
+        // Шаг 1: Показываем слово и кнопку "Показать ответ"
         const initialMessage = `<b>${word.word}</b> ${word.transcription}`;
         const showAnswerKeyboard = createShowAnswerKeyboard(ctx);
 
@@ -42,11 +82,10 @@ export function repeatWordsConversation() {
           continue;
         }
 
-        // После нажатия показываем полное сообщение с переводом и клавиатурой оценок
+        // Шаг 2: Показываем полное сообщение с переводом и клавиатурой оценок
         const fullMessage = `<b>${word.word}</b> ${word.transcription}
 <b>${word.translation}</b>`;
 
-        // Клавиатура с вариантами оценки и кнопкой завершения
         const rateKeyboard = await createRateWordKeyboard(ctx);
 
         await ctx.api.editMessageText(
@@ -88,6 +127,6 @@ export function repeatWordsConversation() {
         await reviewWord({ userId: user.id, wordId: word.id, quality: callbackData.rate });
       }
     },
-    REPEAT_WORDS_CONVERSATION,
+    WORDS_CONVERSATION,
   );
 }

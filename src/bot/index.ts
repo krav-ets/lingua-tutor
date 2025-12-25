@@ -4,7 +4,7 @@ import type { Logger } from '#root/logger.js';
 import type { PrismaClientX } from '#root/prisma/index.js';
 import type { BotConfig, StorageAdapter } from 'grammy';
 import { createContextConstructor } from '#root/bot/context.js';
-import { greetingConversation, repeatWordsConversation, studyWordsConversation } from '#root/bot/conversations/index.js';
+import { greetingConversation, wordsConversation } from '#root/bot/conversations/index.js';
 import { addWordFeature } from '#root/bot/features/add-word.js';
 import { adminFeature } from '#root/bot/features/admin.js';
 import { languageFeature } from '#root/bot/features/language.js';
@@ -74,8 +74,7 @@ export function createBot(token: string, dependencies: Dependencies, options: Op
     plugins: [i18n],
   }));
   protectedBot.use(greetingConversation());
-  protectedBot.use(repeatWordsConversation());
-  protectedBot.use(studyWordsConversation());
+  protectedBot.use(wordsConversation());
 
   // Menus
   protectedBot.use(settingsMenu);

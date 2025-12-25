@@ -17,6 +17,7 @@ export interface SessionData {
     minute?: number;
     timezone?: string; // UTC offset like "+03:00"
   };
+  wordsMode?: 'study' | 'repeat';
 }
 
 interface ExtendedContextFlavor {
