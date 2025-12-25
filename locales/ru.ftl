@@ -55,6 +55,7 @@ current-time = Текущее время
 select-hour = Выбрать час
 select-minute = Выбрать минуты
 back = Назад
+select-timezone = Выбрать часовой пояс
 settings-done-description = Настройки успешно изменены
 
 ## confirmation keyboard

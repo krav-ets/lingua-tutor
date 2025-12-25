@@ -59,6 +59,7 @@ current-time = Current time
 select-hour = Select hour
 select-minute = Select minute
 back = Back
+select-timezone = Select timezone
 settings-done-description = Settings updated successfully
 
 ## confirmation keyboard

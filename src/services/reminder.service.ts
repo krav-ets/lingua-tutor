@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 
 const TASK = 'send_reminder';
 const DEFAULT_TIME_LOCAL = '14:50';
-const DEFAULT_TIME_ZONE = 'UTC';
+const DEFAULT_TIME_ZONE = '+03:00';
 
 function parseHm(hm: string): { h: number; m: number } {
   const [hours, minutes] = hm.split(':').map(Number);
@@ -101,18 +101,23 @@ export async function disableRemindersForUser(userId: number) {
   }
 }
 
-export async function updateReminderTime(userId: number, timeLocal: string) {
+export async function updateReminderTime(userId: number, timeLocal: string, timeZone?: string) {
   let reminder = await reminderRepository.findByUserId(userId);
 
+  const updateData: { timeLocal: string; timeZone?: string } = { timeLocal };
+  if (timeZone) {
+    updateData.timeZone = timeZone;
+  }
+
   if (reminder) {
-    // Update timeLocal for existing reminder
-    reminder = await reminderRepository.update(reminder.id, { timeLocal });
+    // Update timeLocal and optionally timeZone for existing reminder
+    reminder = await reminderRepository.update(reminder.id, updateData);
   }
   else {
     // Create new reminder with the specified time
     reminder = await reminderRepository.upsertDefault(userId, {
       timeLocal,
-      timeZone: DEFAULT_TIME_ZONE,
+      timeZone: timeZone || DEFAULT_TIME_ZONE,
     });
   }
 

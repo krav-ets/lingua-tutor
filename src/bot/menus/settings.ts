@@ -7,7 +7,7 @@ import { disableRemindersForUser, enableRemindersForUser, isRemindersEnabled, up
 import { addCollectionToUser, removeCollectionFromUser } from '#root/services/user.service.js';
 import { Menu } from '@grammyjs/menu';
 import ISO6391 from 'iso-639-1';
-import { timePickerMenu } from '../features/time-picker.js';
+import { DEFAULT_TIMEZONE, timePickerMenu } from '../features/time-picker.js';
 
 const nativeLanguageMenu = new Menu<Context>('native-language-menu')
   .dynamic(async (ctx, range) => {
@@ -185,7 +185,7 @@ const remindersMenu = new Menu<Context>('reminders-menu')
     // But the current service doesn't easily expose it without fetching the reminder object
     // Let's assume we start with 12:00 or keep previous session state
     if (!ctx.session.timePicker) {
-      ctx.session.timePicker = { hour: 12, minute: 0 };
+      ctx.session.timePicker = { hour: 12, minute: 0, timezone: DEFAULT_TIMEZONE };
     }
     await ctx.menu.nav('time-picker-menu');
   })
@@ -193,11 +193,11 @@ const remindersMenu = new Menu<Context>('reminders-menu')
   .text(ctx => ctx.t('save'), async (ctx) => {
     // If we came back from time picker, we might want to save the time
     if (ctx.session.timePicker) {
-      const { hour, minute } = ctx.session.timePicker;
+      const { hour, minute, timezone } = ctx.session.timePicker;
       const timeString = `${String(hour ?? '00').padStart(2, '0')}:${String(minute ?? '00').padStart(2, '0')}`;
       const user = await userRepository.findByTelegramId(ctx.from?.id);
       if (user) {
-        await updateReminderTime(user.id, timeString);
+        await updateReminderTime(user.id, timeString, timezone || DEFAULT_TIMEZONE);
       }
       // Clear session after saving? Maybe keep it for UI consistency until closed
       // delete ctx.session.timePicker;

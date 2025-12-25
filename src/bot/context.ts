@@ -15,6 +15,7 @@ export interface SessionData {
   timePicker?: {
     hour?: number;
     minute?: number;
+    timezone?: string; // UTC offset like "+03:00"
   };
 }
 
