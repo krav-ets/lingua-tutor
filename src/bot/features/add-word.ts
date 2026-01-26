@@ -2,8 +2,8 @@ import type { Context } from '#root/bot/context.js';
 import { addWordData } from '#root/bot/callback-data/add-word.js';
 // import { chunk } from '#root/bot/helpers/keyboard.js';
 import { logHandle } from '#root/bot/helpers/logging.js';
-import { translate } from '#root/llm/tasks/translate.js';
 import { userRepository } from '#root/repositories/user.repository.js';
+import { translateWord } from '#root/services/translation.service.js';
 import { addTranslatedWordForUser } from '#root/services/user-words.service.js';
 import { b, code, fmt, i, spoiler } from '@grammyjs/parse-mode';
 import { Composer, InlineKeyboard } from 'grammy';
@@ -20,12 +20,12 @@ composer.chatType('private').on('message:text', logHandle('handle-word-input'), 
   const word = ctx.message.text.trim();
 
   try {
-    // Use the proper translate function from the LLM module
+    // Use the translation service (LLM or Yandex based on config)
     let results: any;
     let usage: any;
     try {
       ctx.chatAction = 'typing';
-      const translation = await translate(word, 'en-ru');
+      const translation = await translateWord(word, 'en-ru');
       results = translation.data;
       usage = translation.usage;
     }

@@ -15,6 +15,9 @@ const baseConfigSchema = v.object({
   serverHost: v.optional(v.string(), '0.0.0.0'),
   serverPort: v.optional(v.pipe(v.string(), v.transform(Number), v.number()), '80'),
   jwtSecret: v.string(),
+  // Translation settings
+  translationMode: v.optional(v.picklist(['llm', 'yandex']), 'llm'),
+  yandexDict: v.optional(v.string()),
 });
 
 const configSchema = v.pipe(
